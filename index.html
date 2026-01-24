@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#4f46e5">
-    <meta name="description" content="Painel de Inteligência para Classificação do CNU Bloco 7">
+    
+    <!-- PWA Setup -->
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <meta name="description" content="Painel de Inteligência para Classificação do CNU Bloco 7 - Justiça e Defesa">
+    <meta name="author" content="Vicenzo Soares dos Santos">
+    
+    <!-- iOS Support -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Painel CNU">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2910/2910768.png">
+
     <title>Painel CNU - Bloco 7</title>
     
-    <!-- PWA Manifest (Embedded) -->
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUGFpbmVsIENOVSAtIEJsb2NvIDciLCJzaG9ydF9uYW1lIjoiUGFpbmVsIENOVSIs" id="manifest-placeholder">
+    <!-- Manifest Placeholder -->
+    <link rel="manifest" id="manifest-placeholder">
 
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,14 +33,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <script>
-        // Inject Manifest dynamically to ensure base64 works cross-browser if needed, or update href
+        // --- MANIFEST DINÂMICO PARA PWA ---
+        // Isso garante que o navegador entenda que é um app instalável mesmo sem arquivo externo
         const manifestData = {
             "name": "Painel CNU - Bloco 7",
-            "short_name": "Painel CNU",
+            "short_name": "CNU B7",
             "start_url": ".",
             "display": "standalone",
             "background_color": "#ffffff",
             "theme_color": "#4f46e5",
+            "orientation": "portrait",
             "icons": [
                 {
                     "src": "https://cdn-icons-png.flaticon.com/512/2910/2910768.png",
@@ -54,23 +65,18 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        slate: { 850: '#1e293b', 900: '#0f172a', 950: '#020617' }
-                    },
-                    borderRadius: {
-                        '3xl': '1.5rem',
-                        '4xl': '2rem',
-                    }
+                    colors: { slate: { 850: '#1e293b', 900: '#0f172a', 950: '#020617' } },
+                    borderRadius: { '4xl': '2rem' }
                 }
             }
         }
     </script>
 
     <style>
-        :root { --bg: #f3f4f6; --surface: #ffffff; --text: #111827; --border: #e5e7eb; }
-        .dark { --bg: #0f172a; --surface: #1e293b; --text: #f8fafc; --border: #334155; }
+        :root { --bg: #f3f4f6; --surface: #ffffff; --text: #111827; }
+        .dark { --bg: #0f172a; --surface: #1e293b; --text: #f8fafc; }
         
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; padding-bottom: env(safe-area-inset-bottom); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; padding-bottom: env(safe-area-inset-bottom); overflow: hidden; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
         /* Scrollbar */
@@ -78,72 +84,94 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        /* Glassmorphism & Cards */
-        .glass-panel { background: rgba(255, 255, 255, 0.98); border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border-radius: 16px; transition: background 0.3s, border 0.3s; }
-        .dark .glass-panel { background: rgba(30, 41, 59, 0.95); border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+        /* Glassmorphism */
+        .glass-panel { background: rgba(255, 255, 255, 0.98); border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border-radius: 16px; }
+        .dark .glass-panel { background: rgba(30, 41, 59, 0.95); border: 1px solid #334155; }
         
         .glass-modal { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
         .dark .glass-modal { background: #1e293b; border: 1px solid #334155; }
 
-        /* Badges */
+        /* Styles */
         .badge { display: inline-flex; align-items: center; justify-content: center; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid transparent; letter-spacing: 0.02em; }
-        .tag-ac { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; }
-        .dark .tag-ac { background: #334155; color: #94a3b8; border-color: #475569; }
-        
-        .tag-pn { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-        .dark .tag-pn { background: #431407; color: #fdba74; border-color: #9a3412; }
-        
-        .tag-pcd { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
-        .dark .tag-pcd { background: #172554; color: #93c5fd; border-color: #1e40af; }
-        
-        .tag-pi { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
-        .dark .tag-pi { background: #052e16; color: #86efac; border-color: #166534; }
-        
-        .tag-pq { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
-        .dark .tag-pq { background: #3b0764; color: #d8b4fe; border-color: #6b21a8; }
+        .tag-ac { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; } .dark .tag-ac { background: #334155; color: #94a3b8; border-color: #475569; }
+        .tag-pn { background: #fff7ed; color: #c2410c; border-color: #fed7aa; } .dark .tag-pn { background: #431407; color: #fdba74; border-color: #9a3412; }
+        .tag-pcd { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; } .dark .tag-pcd { background: #172554; color: #93c5fd; border-color: #1e40af; }
+        .tag-pi { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; } .dark .tag-pi { background: #052e16; color: #86efac; border-color: #166534; }
+        .tag-pq { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; } .dark .tag-pq { background: #3b0764; color: #d8b4fe; border-color: #6b21a8; }
 
-        /* Pills */
-        .pill { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; text-align: center; min-width: 75px; display: inline-block; white-space: nowrap; }
-        .st-vaga { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-        .dark .st-vaga { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
-        
-        .st-cr { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
-        .dark .st-cr { background: #0c4a6e; color: #7dd3fc; border: 1px solid #0284c7; }
-        
-        .st-elim { background: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; }
-        .dark .st-elim { background: #334155; color: #94a3b8; border: 1px solid #475569; }
+        .pill { padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; text-align: center; min-width: 75px; display: inline-block; white-space: nowrap; }
+        .st-vaga { background: #dcfce7; color: #15803d; border: 1px solid #86efac; } .dark .st-vaga { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+        .st-cr { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; } .dark .st-cr { background: #0c4a6e; color: #7dd3fc; border: 1px solid #0284c7; }
+        .st-elim { background: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; } .dark .st-elim { background: #334155; color: #94a3b8; border: 1px solid #475569; }
 
         .hover-row:hover { background-color: #f9fafb; cursor: pointer; transform: scale-[1.001]; transition: transform 0.1s; position: relative; z-index: 10; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .dark .hover-row:hover { background-color: #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        .dark .hover-row:hover { background-color: #334155; }
         
         .layout-container { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Mobile Utilities */
         @media (max-width: 1024px) {
-            .mobile-stack { flex-direction: column; }
             .mobile-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            header { height: auto; min-height: 4rem; padding-top: 0.75rem; padding-bottom: 0.75rem; flex-wrap: wrap; justify-content: center; }
+            header { height: auto; min-height: 4rem; padding: 0.75rem; flex-wrap: wrap; justify-content: center; }
             .header-title-container { width: 100%; margin-bottom: 0.75rem; justify-content: center; text-align: center; }
             .header-actions-container { width: 100%; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
         }
         
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
 
-    <div class="layout-container">
+    <!-- INTRO SPLASH SCREEN -->
+    <div id="introScreen" class="fixed inset-0 z-[100] bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-fade-in overflow-y-auto">
+        <div class="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-100 dark:border-slate-800 relative overflow-hidden my-auto">
+            <!-- Decorative BG -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+            
+            <div class="absolute top-4 right-4">
+                 <button onclick="toggleDarkMode()" class="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-yellow-400 hover:bg-slate-200 transition-colors">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+
+            <div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-indigo-800 text-white rounded-3xl flex items-center justify-center text-3xl shadow-lg mb-6 mx-auto transform hover:rotate-3 transition-transform">
+                <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            
+            <h1 class="text-2xl font-black text-slate-800 dark:text-white mb-1">Painel CNU <span class="text-indigo-600">Bloco 7</span></h1>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Justiça e Defesa</p>
+            
+            <div class="text-sm text-slate-600 dark:text-slate-300 space-y-3 mb-8 text-left bg-slate-50 dark:bg-slate-800/50 p-5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <p><i class="fa-solid fa-circle-info text-indigo-500 mr-2"></i><strong>Aviso Importante:</strong> As informações aqui apresentadas são de <strong>teor informativo e estimado</strong>, baseadas no cruzamento de dados públicos preliminares.</p>
+                <p><i class="fa-solid fa-triangle-exclamation text-orange-500 mr-2"></i>Este painel não substitui as publicações oficiais.</p>
+                <p><i class="fa-solid fa-calendar-check text-emerald-500 mr-2"></i>A classificação final oficial será divulgada pela banca organizadora em <strong>20/02/2026</strong>.</p>
+            </div>
+
+            <button onclick="acceptDisclaimer()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/30 transition-all transform active:scale-95 flex items-center justify-center gap-2 mb-6">
+                <span>Li e Concordo, Acessar</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <p class="text-[10px] text-slate-400 mb-1">Criado por <strong>Vicenzo Soares dos Santos</strong> em 24/01/2026</p>
+                <p class="text-[10px] text-slate-400">Última atualização: 24/01/2026</p>
+                
+                <a href="https://vsantos.adv.br/" target="_blank" class="inline-flex items-center gap-2 mt-3 text-[10px] text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-scale-balanced"></i> Apoio Jurídico: vsantos.adv.br
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT -->
+    <div class="layout-container opacity-0 transition-opacity duration-700" id="mainLayout">
         
         <!-- Header -->
         <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex-none z-50 flex items-center justify-between px-6 lg:px-8 shadow-sm relative transition-all duration-300">
             
-            <!-- Logo & Titulo -->
             <div class="flex items-center gap-4 lg:gap-5 overflow-hidden header-title-container py-1">
-                <!-- Ícone Otimizado (Squircle) -->
+                <!-- Ícone Built-in -->
                 <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-3 rounded-4xl shadow-xl flex-none transform transition hover:scale-105 hidden lg:block">
                     <i class="fa-solid fa-chart-simple text-lg"></i>
                 </div>
@@ -157,49 +185,46 @@
                 </div>
             </div>
             
-            <!-- Actions -->
             <div class="flex items-center gap-2 lg:gap-3 header-actions-container">
                 
-                <!-- Install PWA Button (Hidden by default) -->
-                <button id="installBtn" class="hidden h-9 px-3 items-center justify-center gap-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-bold text-xs uppercase">
-                    <i class="fa-solid fa-download"></i> Instalar App
+                <!-- Install App Button (Auto-Detect) -->
+                <button id="installBtn" class="hidden h-9 px-3 items-center justify-center gap-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-bold text-xs uppercase animate-pulse">
+                    <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Instalar</span>
                 </button>
 
-                <!-- Dark Mode Toggle -->
-                <button onclick="toggleDarkMode()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-sm" title="Alternar Tema">
+                <!-- Toggle Theme -->
+                <button onclick="toggleDarkMode()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-sm" title="Tema">
                     <i class="fa-solid fa-moon dark:hidden"></i>
                     <i class="fa-solid fa-sun hidden dark:block"></i>
                 </button>
 
                 <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
 
-                <!-- FGV Links -->
-                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Site Oficial">
+                <!-- Links Externos -->
+                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Edital Oficial">
                     <i class="fa-solid fa-globe group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Edital</span>
                 </a>
-                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Área do Candidato">
+                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Login Candidato">
                     <i class="fa-solid fa-user-lock group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Login</span>
                 </a>
 
-                <!-- VS Adv (Mini Botão Discreto) -->
-                <a href="https://vsantos.adv.br/" target="_blank" class="h-9 w-9 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all" title="VS Advocacia">
-                    <i class="fa-solid fa-scale-balanced text-sm"></i>
+                <!-- VS Adv (Sutil, ao lado do login) -->
+                <a href="https://vsantos.adv.br/" target="_blank" class="h-9 px-2 flex items-center justify-center gap-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all group" title="Assessoria Jurídica - VS Advocacia">
+                    <i class="fa-solid fa-scale-balanced text-sm group-hover:scale-110 transition-transform"></i>
                 </a>
 
                 <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
 
-                <!-- Share Button -->
-                <button onclick="shareApp()" class="h-9 w-9 flex items-center justify-center rounded-lg text-slate-500 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors" title="Compartilhar">
+                <!-- Share -->
+                <button onclick="shareApp()" class="h-9 w-9 flex items-center justify-center rounded-lg text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors" title="Compartilhar">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                 </button>
 
                 <div id="statusBadge" class="hidden items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-800 text-[10px] font-bold uppercase transition-all shadow-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> 
-                    <span id="dbCount">0</span>
-                    <span class="hidden sm:inline"> Reg.</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> <span id="dbCount">0</span>
                 </div>
                 
-                <button onclick="saveOfflineHTML()" class="h-9 w-9 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm group" title="Salvar HTML Completo">
+                <button onclick="saveOfflineHTML()" class="h-9 w-9 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm group" title="Baixar App Offline">
                     <i class="fa-solid fa-floppy-disk group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Salvar</span>
                 </button>
                 
@@ -209,177 +234,108 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- Main -->
         <main class="flex-1 flex flex-col p-3 lg:p-6 gap-3 lg:gap-4 overflow-hidden relative bg-slate-50/50 dark:bg-slate-950 transition-colors duration-300">
 
-            <!-- Upload / Input Screen -->
+            <!-- Upload -->
             <div id="uploadScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 transition-all duration-300">
                 <div class="glass-panel w-full max-w-md overflow-hidden flex flex-col shadow-2xl animate-fade-in bg-white dark:bg-slate-900">
                     <div class="flex border-b border-slate-100 dark:border-slate-800">
                         <button onclick="switchTab('file')" id="tabFile" class="flex-1 py-4 text-xs font-bold uppercase tracking-wide text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30 dark:bg-indigo-900/20">Arquivo .JSON</button>
                         <button onclick="switchTab('text')" id="tabText" class="flex-1 py-4 text-xs font-bold uppercase tracking-wide text-slate-400 hover:text-indigo-600 transition-colors">Colar Texto</button>
                     </div>
-
                     <div id="panelFile" class="p-8 text-center flex flex-col items-center">
                         <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-inner">
                             <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-500"></i>
                         </div>
                         <h2 class="font-bold text-slate-800 dark:text-white text-lg mb-1">Carregar Dados</h2>
-                        <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs px-4 leading-relaxed">Selecione o arquivo <code>resultado_oficial_v5.json</code>.</p>
-                        
-                        <label class="group relative w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all text-xs uppercase flex items-center justify-center gap-2 overflow-hidden">
+                        <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs px-4">Selecione o arquivo <code>resultado_oficial_v5.json</code>.</p>
+                        <label class="group relative w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-xs uppercase flex items-center justify-center gap-2 overflow-hidden">
                             <span class="relative z-10 flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> Selecionar Arquivo</span>
                             <input type="file" id="fileInput" accept=".json" class="hidden">
-                            <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
                         </label>
-                        <div id="loadingUpload" class="hidden mt-4 text-indigo-600 dark:text-indigo-400 text-xs font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i> Processando...
-                        </div>
+                        <div id="loadingUpload" class="hidden mt-4 text-indigo-600 dark:text-indigo-400 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Processando...</div>
                     </div>
-
                     <div id="panelText" class="p-5 hidden flex-col gap-3">
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Abra o arquivo .json, copie tudo e cole abaixo:</p>
-                        <textarea id="jsonTextInput" class="w-full h-48 p-3 text-[10px] font-mono border border-slate-200 dark:border-slate-700 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300" placeholder='Ex: [{"id": "...", "name": "..."}]'></textarea>
-                        <button onclick="loadFromText()" class="w-full bg-slate-800 dark:bg-indigo-600 hover:bg-slate-900 dark:hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase shadow transition-all flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-bolt"></i> Carregar Dados
-                        </button>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Cole o JSON abaixo:</p>
+                        <textarea id="jsonTextInput" class="w-full h-48 p-3 text-[10px] font-mono border border-slate-200 dark:border-slate-700 rounded-lg focus:border-indigo-500 outline-none resize-none bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300"></textarea>
+                        <button onclick="loadFromText()" class="w-full bg-slate-800 dark:bg-indigo-600 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl text-xs uppercase shadow transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-bolt"></i> Carregar</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Area -->
+            <!-- Dashboard -->
             <div id="dashboardScreen" class="hidden flex-col h-full gap-3 lg:gap-4">
-                
-                <!-- Filters Bar -->
+                <!-- Filters -->
                 <div class="glass-panel p-2.5 flex flex-col lg:flex-row items-center justify-between gap-3 flex-none z-20 bg-white dark:bg-slate-900 transition-colors duration-300">
-                    
                     <div class="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-auto">
                         <div class="relative w-full sm:w-60 group">
-                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase rounded z-10 transition-colors">Visualização</label>
-                            <select id="viewFilter" onchange="updateView()" class="w-full h-10 pl-3 pr-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 appearance-none shadow-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
+                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase rounded z-10">Visualização</label>
+                            <select id="viewFilter" onchange="updateView()" class="w-full h-10 pl-3 pr-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 appearance-none shadow-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-600">
                                 <option value="Geral">🌍 Classificação Geral</option>
-                                <option value="AC">🏢 Ampla Concorrência (AC)</option>
-                                <option value="PN">✊🏿 Pessoas Negras (PN)</option>
-                                <option value="PCD">♿ Pessoa c/ Deficiência (PCD)</option>
-                                <option value="PI">🏹 Indígenas (PI)</option>
-                                <option value="PQ">🏡 Quilombolas (PQ)</option>
+                                <option value="AC">🏢 Ampla Concorrência</option>
+                                <option value="PN">✊🏿 Pessoas Negras</option>
+                                <option value="PCD">♿ PCD</option>
+                                <option value="PI">🏹 Indígenas</option>
+                                <option value="PQ">🏡 Quilombolas</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-slate-400 text-xs pointer-events-none group-hover:text-indigo-500"></i>
                         </div>
-                        
-                        <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 h-10 w-full sm:w-auto justify-between shadow-sm relative hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
-                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase rounded transition-colors">Vagas AC</label>
+                        <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 h-10 w-full sm:w-auto justify-between shadow-sm relative hover:border-indigo-300 transition-colors">
+                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase rounded">Vagas AC</label>
                             <input type="number" id="vagasInput" class="w-16 bg-transparent text-sm font-bold text-center text-indigo-700 dark:text-indigo-400 outline-none" value="161" onchange="initApp()">
                         </div>
                     </div>
-
-                    <!-- Quick Filter & Actions -->
                     <div class="flex items-center gap-2 w-full lg:w-auto overflow-x-auto no-scrollbar">
-                        <!-- Quick Status Filters -->
                         <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                            <button onclick="setQuickFilter('ALL')" id="qf-ALL" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">Todos</button>
-                            <button onclick="setQuickFilter('VAGA')" id="qf-VAGA" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-emerald-600 transition-all">Vaga</button>
-                            <button onclick="setQuickFilter('CR')" id="qf-CR" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-sky-600 transition-all">CR</button>
+                            <button onclick="setQuickFilter('ALL')" id="qf-ALL" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">Todos</button>
+                            <button onclick="setQuickFilter('VAGA')" id="qf-VAGA" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-emerald-600">Vaga</button>
+                            <button onclick="setQuickFilter('CR')" id="qf-CR" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-sky-600">CR</button>
                         </div>
-
-                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 flex-none"></div>
-
                         <div class="relative w-full lg:w-56 group flex-none">
-                            <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Buscar..." class="w-full h-10 pl-9 pr-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:text-white transition-all shadow-sm">
-                            <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                            <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-2 top-2.5 text-slate-400 hover:text-rose-500 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-all hidden"><i class="fa-solid fa-times-circle text-sm"></i></button>
+                            <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Buscar..." class="w-full h-10 pl-9 pr-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 dark:text-white transition-all shadow-sm">
+                            <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-400 text-xs group-focus-within:text-indigo-500"></i>
+                            <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-2 top-2.5 text-slate-400 hover:text-rose-500 hidden"><i class="fa-solid fa-times-circle text-sm"></i></button>
                         </div>
-
-                        <button id="btnToggleCharts" onclick="toggleSidebar()" class="lg:hidden h-10 w-10 flex-none flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-lg shadow-sm active:bg-slate-100 transition-all">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </button>
-
-                        <button onclick="exportCSV()" class="h-10 w-10 flex-none flex items-center justify-center bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-all transform active:scale-95" title="Exportar CSV">
-                            <i class="fa-solid fa-file-csv"></i>
-                        </button>
-                        
-                        <button onclick="exportPDF()" class="h-10 w-10 flex-none flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-md hover:bg-rose-700 transition-all transform active:scale-95" title="Exportar PDF">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </button>
+                        <button id="btnToggleCharts" onclick="toggleSidebar()" class="lg:hidden h-10 w-10 flex-none flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 rounded-lg shadow-sm"><i class="fa-solid fa-chart-pie"></i></button>
+                        <button onclick="exportCSV()" class="h-10 w-10 flex-none flex items-center justify-center bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transform active:scale-95"><i class="fa-solid fa-file-csv"></i></button>
+                        <button onclick="exportPDF()" class="h-10 w-10 flex-none flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-md hover:bg-rose-700 transform active:scale-95"><i class="fa-solid fa-file-pdf"></i></button>
                     </div>
                 </div>
 
-                <!-- Content Grid -->
+                <!-- Grid -->
                 <div class="flex-grow flex flex-col lg:flex-row gap-3 lg:gap-4 overflow-hidden min-h-0">
-                    
-                    <!-- Sidebar (Estatísticas) -->
+                    <!-- Sidebar -->
                     <div id="sidebarContainer" class="hidden lg:flex lg:w-[320px] flex-none flex-col gap-3 overflow-y-auto lg:pr-1 custom-scroll transition-all duration-300">
-                        
-                        <!-- Cards Topo -->
                         <div class="grid grid-cols-2 gap-2 lg:gap-3">
                             <div class="glass-panel p-3 border-l-4 border-emerald-500 bg-white dark:bg-slate-900 shadow-sm">
                                 <p class="text-[9px] text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">Corte Vaga</p>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-xl font-black text-slate-800 dark:text-white font-mono tracking-tight" id="kpiCutVaga">--</p>
-                                    <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded shadow-sm" id="posCutVaga">--</span>
-                                </div>
+                                <div class="flex justify-between items-baseline"><p class="text-xl font-black text-slate-800 dark:text-white font-mono" id="kpiCutVaga">--</p><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded" id="posCutVaga">--</span></div>
                             </div>
                             <div class="glass-panel p-3 border-l-4 border-sky-500 bg-white dark:bg-slate-900 shadow-sm">
                                 <p class="text-[9px] text-sky-700 dark:text-sky-400 font-bold uppercase tracking-wider mb-1">Corte CR</p>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-xl font-black text-slate-800 dark:text-white font-mono tracking-tight" id="kpiCutCR">--</p>
-                                    <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 px-2 py-0.5 rounded shadow-sm" id="posCutCR">--</span>
-                                </div>
+                                <div class="flex justify-between items-baseline"><p class="text-xl font-black text-slate-800 dark:text-white font-mono" id="kpiCutCR">--</p><span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 px-2 py-0.5 rounded" id="posCutCR">--</span></div>
                             </div>
                         </div>
-
-                        <!-- Card Stats -->
                         <div class="glass-panel p-3 bg-white dark:bg-slate-900 flex justify-between items-center shadow-sm">
-                             <div>
-                                <p class="text-[9px] text-slate-400 font-bold uppercase">Listados</p>
-                                <p class="text-lg font-black text-slate-700 dark:text-slate-200" id="kpiListTotal">0</p>
-                             </div>
-                             <div class="text-right">
-                                <p class="text-[9px] text-slate-400 font-bold uppercase">Maior Nota</p>
-                                <p class="text-lg font-bold text-indigo-700 dark:text-indigo-400 font-mono" id="kpiMax">0.00</p>
-                             </div>
+                             <div><p class="text-[9px] text-slate-400 font-bold uppercase">Listados</p><p class="text-lg font-black text-slate-700 dark:text-slate-200" id="kpiListTotal">0</p></div>
+                             <div class="text-right"><p class="text-[9px] text-slate-400 font-bold uppercase">Maior Nota</p><p class="text-lg font-bold text-indigo-700 dark:text-indigo-400 font-mono" id="kpiMax">0.00</p></div>
                         </div>
-
-                        <!-- Charts Area -->
                         <div class="glass-panel p-4 flex flex-col gap-5 flex-grow bg-white dark:bg-slate-900 shadow-sm min-h-[250px]">
-                            <!-- Status Doughnut -->
-                            <div>
-                                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Situação</h3>
-                                <div class="h-32 w-full relative">
-                                    <canvas id="statusChart"></canvas>
-                                </div>
-                            </div>
+                            <div><h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Situação</h3><div class="h-32 w-full relative"><canvas id="statusChart"></canvas></div></div>
                             <hr class="border-slate-100 dark:border-slate-800">
-                            <!-- Score Histogram -->
-                            <div class="flex-grow flex flex-col">
-                                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-bar"></i> Faixa de Notas</h3>
-                                <div class="relative w-full flex-grow min-h-[120px]">
-                                    <canvas id="scoreChart"></canvas>
-                                </div>
-                            </div>
+                            <div class="flex-grow flex flex-col"><h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-bar"></i> Faixa de Notas</h3><div class="relative w-full flex-grow min-h-[120px]"><canvas id="scoreChart"></canvas></div></div>
                         </div>
                     </div>
 
-                    <!-- Main Table -->
+                    <!-- Table -->
                     <div class="flex-grow glass-panel flex flex-col overflow-hidden relative min-h-0 bg-white dark:bg-slate-900 shadow-sm transition-colors duration-300">
                         <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center flex-none sticky top-0 z-20">
-                            <div class="flex items-center gap-2">
-                                <div class="w-1 h-4 bg-indigo-600 rounded-full shadow-sm"></div>
-                                <h3 class="text-[10px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest" id="tableHeader">Classificação</h3>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div id="cotasCounter" class="hidden sm:flex gap-1 text-[9px] font-bold text-slate-400"></div>
-                                <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded shadow-sm" id="loadedCount">0</span>
-                            </div>
+                            <div class="flex items-center gap-2"><div class="w-1 h-4 bg-indigo-600 rounded-full shadow-sm"></div><h3 class="text-[10px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest" id="tableHeader">Classificação</h3></div>
+                            <div class="flex items-center gap-2"><div id="cotasCounter" class="hidden sm:flex gap-1 text-[9px] font-bold text-slate-400"></div><span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded shadow-sm" id="loadedCount">0</span></div>
                         </div>
-
                         <div class="flex-grow overflow-y-auto relative custom-scroll bg-white dark:bg-slate-900" id="tableContainer">
-                            <!-- Empty State -->
-                            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 h-full animate-fade-in">
-                                <i class="fa-solid fa-magnifying-glass text-4xl mb-3"></i>
-                                <p class="text-[10px] font-bold uppercase tracking-wide">Nenhum resultado encontrado</p>
-                            </div>
-
+                            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 h-full animate-fade-in"><i class="fa-solid fa-magnifying-glass text-4xl mb-3"></i><p class="text-[10px] font-bold uppercase tracking-wide">Nenhum resultado encontrado</p></div>
                             <div class="mobile-scroll-x">
                                 <table class="w-full text-left border-collapse min-w-[600px] lg:min-w-0">
                                     <thead class="bg-slate-50 dark:bg-slate-800 sticky top-0 z-10 shadow-sm border-b border-slate-200 dark:border-slate-700">
@@ -396,72 +352,37 @@
                                     <tbody id="tableBody" class="divide-y divide-slate-50 dark:divide-slate-800 text-xs text-slate-600 dark:text-slate-300"></tbody>
                                 </table>
                             </div>
-                            
-                            <div id="scrollSentinel" class="h-16 w-full flex justify-center items-center p-2">
-                                 <i class="fa-solid fa-spinner fa-spin text-indigo-400 hidden" id="spinnerIcon"></i>
-                            </div>
+                            <div id="scrollSentinel" class="h-16 w-full flex justify-center items-center p-2"><i class="fa-solid fa-spinner fa-spin text-indigo-400 hidden" id="spinnerIcon"></i></div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </main>
 
         <!-- Back to Top -->
-        <button id="backToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 p-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
-            <i class="fa-solid fa-arrow-up"></i>
-        </button>
+        <button id="backToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 p-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none"><i class="fa-solid fa-arrow-up"></i></button>
 
-        <!-- MODAL DETAIL -->
+        <!-- MODAL -->
         <div id="detailModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center pointer-events-none p-4">
             <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0 pointer-events-auto" onclick="closeModal()" id="modalOverlay"></div>
-            
             <div id="modalContent" class="glass-modal w-full max-w-md bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 pointer-events-auto flex flex-col max-h-[90vh] relative">
-                
-                <button onclick="closeModal()" class="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors z-10">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-
+                <button onclick="closeModal()" class="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors z-10"><i class="fa-solid fa-times"></i></button>
                 <div class="mb-5 pr-8">
                     <span class="text-[9px] font-bold text-white bg-slate-800 dark:bg-slate-700 px-2 py-0.5 rounded uppercase tracking-widest inline-block mb-2 shadow-sm" id="mPos">#--</span>
                     <h2 class="text-xl font-bold text-slate-800 dark:text-white leading-tight" id="mName">Nome</h2>
-                    <p class="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1">
-                        <i class="fa-solid fa-id-card"></i> <span id="mId">--</span>
-                    </p>
+                    <p class="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-id-card"></i> <span id="mId">--</span></p>
                 </div>
-                
                 <div class="overflow-y-auto custom-scroll pr-1 flex-1 space-y-5">
-                    
-                    <div class="text-center bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Situação</p>
-                        <div id="mStatusBadge" class="inline-block transform scale-110"></div>
-                    </div>
-
+                    <div class="text-center bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Situação</p><div id="mStatusBadge" class="inline-block transform scale-110"></div></div>
                     <div class="grid grid-cols-3 gap-0 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
-                        <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 text-center border-r border-indigo-100 dark:border-indigo-800">
-                            <p class="text-[9px] font-bold text-indigo-400 uppercase">Final</p>
-                            <p class="text-lg font-black text-indigo-700 dark:text-indigo-400 leading-none mt-1" id="mTotal">--</p>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-3 text-center border-r border-slate-100 dark:border-slate-700">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Esp.</p>
-                            <p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mEsp">--</p>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-3 text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Disc.</p>
-                            <p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mDisc">--</p>
-                        </div>
+                        <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 text-center border-r border-indigo-100 dark:border-indigo-800"><p class="text-[9px] font-bold text-indigo-400 uppercase">Final</p><p class="text-lg font-black text-indigo-700 dark:text-indigo-400 leading-none mt-1" id="mTotal">--</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-3 text-center border-r border-slate-100 dark:border-slate-700"><p class="text-[9px] font-bold text-slate-400 uppercase">Esp.</p><p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mEsp">--</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-3 text-center"><p class="text-[9px] font-bold text-slate-400 uppercase">Disc.</p><p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mDisc">--</p></div>
                     </div>
-
-                    <div>
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-slate-800 pb-2 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check"></i> Detalhes
-                        </h4>
-                        <div id="mCotasInfo" class="flex flex-col gap-2"></div>
-                    </div>
+                    <div><h4 class="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-slate-800 pb-2 mb-3 flex items-center gap-2"><i class="fa-solid fa-list-check"></i> Detalhes</h4><div id="mCotasInfo" class="flex flex-col gap-2"></div></div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- JSON DATA -->
@@ -72466,12 +72387,21 @@
     <script>
         const VAGAS_INI = { 'AC': 161, 'PN': 63, 'PCD': 13, 'PI': 8, 'PQ': 5 };
         const PAGE_SIZE = 50;
-        
         let allData = [], calculatedData = [], currentViewList = [], renderedCount = 0;
         let chartDist = null, chartStatus = null;
         let searchTimeout = null;
-        let quickFilter = 'ALL'; // ALL, VAGA, CR, ELIM
+        let quickFilter = 'ALL'; 
         let deferredPrompt;
+
+        // --- INTRO SCREEN ---
+        function acceptDisclaimer() {
+            document.getElementById('introScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('introScreen').style.display = 'none';
+                document.getElementById('mainLayout').style.opacity = '1';
+                checkDataAvailability();
+            }, 500);
+        }
 
         // --- PWA INSTALLATION ---
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -72485,25 +72415,21 @@
                 btn.classList.add('hidden');
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('Usuário aceitou instalar');
-                    }
+                    if (choiceResult.outcome === 'accepted') console.log('Instalação aceita');
                     deferredPrompt = null;
                 });
             });
         });
 
-        // --- SHARE ---
         function shareApp() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Painel CNU - Bloco 7',
-                    text: 'Confira a classificação detalhada do CNU Bloco 7 - Justiça e Defesa.',
-                    url: window.location.href,
-                }).catch(console.error);
-            } else {
-                // Fallback for WhatsApp Web
-                const url = `https://api.whatsapp.com/send?text=Confira a classificação detalhada do CNU Bloco 7: ${window.location.href}`;
+            const shareData = {
+                title: 'Painel CNU - Bloco 7',
+                text: 'Confira a classificação detalhada do CNU Bloco 7 - Justiça e Defesa.',
+                url: window.location.href,
+            };
+            if (navigator.share) navigator.share(shareData).catch(console.error);
+            else {
+                const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
                 window.open(url, '_blank');
             }
         }
@@ -72520,8 +72446,6 @@
             }
             updateCharts();
         }
-
-        // Init Theme
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -72531,14 +72455,10 @@
         // --- CORE UI ---
         function setQuickFilter(type) {
             quickFilter = type;
-            // Update UI buttons
             ['ALL', 'VAGA', 'CR'].forEach(k => {
                 const btn = document.getElementById(`qf-${k}`);
-                if(k === type) {
-                    btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm transform scale-105";
-                } else {
-                    btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
-                }
+                if(k === type) btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm transform scale-105";
+                else btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
             });
             renderedCount = 0;
             document.getElementById('tableBody').innerHTML = '';
@@ -72572,17 +72492,12 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebarContainer');
             const btn = document.getElementById('btnToggleCharts');
-            
             if(sidebar.classList.contains('hidden')) {
-                sidebar.classList.remove('hidden');
-                sidebar.classList.add('flex');
-                btn.classList.add('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+                sidebar.classList.remove('hidden'); sidebar.classList.add('flex');
+                btn.classList.add('bg-indigo-100', 'text-indigo-600', 'border-indigo-200'); btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
             } else {
-                sidebar.classList.add('hidden');
-                sidebar.classList.remove('flex');
-                btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                sidebar.classList.add('hidden'); sidebar.classList.remove('flex');
+                btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200'); btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
             }
         }
 
@@ -72594,10 +72509,7 @@
                 document.getElementById('sidebarContainer').classList.add('hidden');
                 document.getElementById('sidebarContainer').classList.remove('flex');
                 const btn = document.getElementById('btnToggleCharts');
-                if(btn) {
-                    btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                    btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-                }
+                if(btn) { btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200'); btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200'); }
             }
         });
 
@@ -72609,7 +72521,6 @@
 
             btnFile.className = tab === 'file' ? activeClass : inactiveClass;
             btnText.className = tab === 'text' ? activeClass : inactiveClass;
-            
             document.getElementById('panelFile').classList.toggle('hidden', tab !== 'file');
             document.getElementById('panelFile').classList.toggle('flex', tab === 'file');
             document.getElementById('panelText').classList.toggle('hidden', tab !== 'text');
@@ -72617,7 +72528,7 @@
         }
 
         // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
+        function checkDataAvailability() {
             let foundData = false;
             try {
                 const embedded = document.getElementById('json-data').textContent.trim();
@@ -72642,8 +72553,9 @@
             }
 
             if(!foundData) document.getElementById('uploadScreen').classList.remove('hidden');
-            
-            // Scroll to Top Listener
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             const tableContainer = document.getElementById('tableContainer');
             tableContainer.addEventListener('scroll', () => {
                 if (tableContainer.scrollTop > 300) {
@@ -72793,7 +72705,6 @@
             const total = currentViewList.length;
             document.getElementById('kpiListTotal').innerText = total;
             
-            // Cotas Counter
             let counts = {};
             currentViewList.forEach(c => {
                 c.cotas.forEach(cot => {
@@ -72830,7 +72741,6 @@
             const spinner = document.getElementById('spinnerIcon');
             const sentinel = document.getElementById('scrollSentinel');
 
-            // Apply Search + Quick Filter
             let list = currentViewList.filter(c => {
                 const matchSearch = !search || c.name.toLowerCase().includes(search) || c.id.includes(search);
                 if(!matchSearch) return false;
@@ -72862,7 +72772,6 @@
             chunk.forEach((c, i) => {
                 let pos = renderedCount + i + 1;
                 
-                // Badges Lógica
                 let badgesInfo = '';
                 if(c.cotas.length === 1 && c.cotas[0] === 'AC') {
                      badgesInfo = `<span class="badge tag-ac">AC</span>`;
@@ -72894,7 +72803,6 @@
                 if (st.label.includes('VAGA')) pillClass = 'st-vaga'; 
                 else if (st.label.includes('CR')) pillClass = 'st-cr';
 
-                // Erros/Avisos Tooltip Texto
                 let errorHtml = '';
                 let errorMsgs = [];
                 const checkErr = (txt, type) => {
