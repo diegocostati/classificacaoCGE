@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel CNU - Bloco 7 | Ultimate 6.0</title>
+    <title>Painel CNU - Bloco 7 | Ultimate 8.0</title>
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,43 +16,77 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root { --bg: #f3f4f6; --surface: #ffffff; --primary: #4f46e5; --text: #111827; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+        :root { --bg: #f3f4f6; --surface: #ffffff; --text: #111827; --border: #e5e7eb; }
+        .dark { --bg: #0f172a; --surface: #1e293b; --text: #f8fafc; --border: #334155; }
+        
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Scrollbar Fina */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
         /* Glassmorphism & Cards */
-        .glass-panel { background: rgba(255, 255, 255, 0.98); border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border-radius: 12px; }
-        .glass-modal { background: #ffffff; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .glass-panel { background: rgba(255, 255, 255, 0.98); border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border-radius: 12px; transition: background 0.3s, border 0.3s; }
+        .dark .glass-panel { background: rgba(30, 41, 59, 0.95); border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+        
+        .glass-modal { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .dark .glass-modal { background: #1e293b; border: 1px solid #334155; }
 
         /* Badges */
         .badge { display: inline-flex; align-items: center; justify-content: center; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid transparent; letter-spacing: 0.02em; }
         .tag-ac { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; }
+        .dark .tag-ac { background: #334155; color: #94a3b8; border-color: #475569; }
+        
         .tag-pn { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .dark .tag-pn { background: #431407; color: #fdba74; border-color: #9a3412; }
+        
         .tag-pcd { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+        .dark .tag-pcd { background: #172554; color: #93c5fd; border-color: #1e40af; }
+        
         .tag-pi { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .dark .tag-pi { background: #052e16; color: #86efac; border-color: #166534; }
+        
         .tag-pq { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
+        .dark .tag-pq { background: #3b0764; color: #d8b4fe; border-color: #6b21a8; }
 
         /* Pills */
         .pill { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; text-align: center; min-width: 75px; display: inline-block; white-space: nowrap; }
         .st-vaga { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .dark .st-vaga { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+        
         .st-cr { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+        .dark .st-cr { background: #0c4a6e; color: #7dd3fc; border: 1px solid #0284c7; }
+        
         .st-elim { background: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; }
+        .dark .st-elim { background: #334155; color: #94a3b8; border: 1px solid #475569; }
 
         .hover-row:hover { background-color: #f9fafb; cursor: pointer; transform: scale-[1.001]; transition: transform 0.1s; position: relative; z-index: 10; box-shadow: 0 2px 3px rgba(0,0,0,0.02); }
+        .dark .hover-row:hover { background-color: #334155; box-shadow: 0 2px 3px rgba(0,0,0,0.2); }
+        
         .layout-container { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
         /* Mobile Utilities */
         @media (max-width: 1024px) {
             .mobile-stack { flex-direction: column; }
             .mobile-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            /* Ajuste Header Mobile */
             header { height: auto; min-height: 4rem; padding-top: 0.75rem; padding-bottom: 0.75rem; flex-wrap: wrap; justify-content: center; }
             .header-title-container { width: 100%; margin-bottom: 0.75rem; justify-content: center; text-align: center; }
             .header-actions-container { width: 100%; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
@@ -63,108 +97,114 @@
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
-<body class="text-slate-800 bg-slate-50">
+<body class="text-slate-800 bg-slate-50 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
 
     <div class="layout-container">
         
-        <!-- Header (Ajustado) -->
-        <header class="bg-white border-b border-slate-200 flex-none z-50 flex items-center justify-between px-6 lg:px-8 shadow-sm relative transition-all">
+        <!-- Header -->
+        <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex-none z-50 flex items-center justify-between px-6 lg:px-8 shadow-sm relative transition-all duration-300">
             
-            <!-- Logo & Titulo (Mais espaçado) -->
+            <!-- Logo & Titulo -->
             <div class="flex items-center gap-4 lg:gap-5 overflow-hidden header-title-container py-1">
-                <div class="bg-slate-800 text-white p-2.5 rounded-xl shadow-lg flex-none transform transition hover:scale-105 hidden lg:block">
+                <!-- Ícone Melhorado -->
+                <div class="bg-gradient-to-br from-slate-800 to-slate-700 dark:from-indigo-600 dark:to-indigo-700 text-white p-2.5 rounded-2xl shadow-lg flex-none transform transition hover:scale-105 hidden lg:block">
                     <i class="fa-solid fa-chart-simple text-lg"></i>
                 </div>
                 <div class="flex-none">
-                    <h1 class="font-bold text-slate-900 uppercase tracking-tight text-xs lg:text-sm leading-tight flex flex-col lg:flex-row lg:items-center gap-1">
+                    <h1 class="font-bold text-slate-900 dark:text-white uppercase tracking-tight text-xs lg:text-sm leading-tight flex flex-col lg:flex-row lg:items-center gap-1">
                         <span>Painel CNU</span>
-                        <span class="hidden lg:inline text-slate-300 mx-1">|</span>
-                        <span class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded text-[10px] lg:text-xs">Bloco 7</span>
+                        <span class="hidden lg:inline text-slate-300 dark:text-slate-600 mx-1">|</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded text-[10px] lg:text-xs">Bloco 7</span>
                     </h1>
-                    <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5">Justiça e Defesa</p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Justiça e Defesa</p>
                 </div>
             </div>
             
             <!-- Actions -->
             <div class="flex items-center gap-3 header-actions-container">
+                
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="h-9 w-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-sm" title="Alternar Tema">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+
+                <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
+
                 <!-- FGV Links -->
-                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm group" title="Site Oficial do Concurso">
+                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Site Oficial">
                     <i class="fa-solid fa-globe group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Edital</span>
                 </a>
-                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm group" title="Área do Candidato">
+                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-9 px-3 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm group" title="Área do Candidato">
                     <i class="fa-solid fa-user-lock group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Login</span>
                 </a>
 
-                <div class="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
+                <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
 
-                <div id="statusBadge" class="hidden items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100 text-[10px] font-bold uppercase transition-all shadow-sm">
+                <div id="statusBadge" class="hidden items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-800 text-[10px] font-bold uppercase transition-all shadow-sm">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> 
                     <span id="dbCount">0</span>
                     <span class="hidden sm:inline"> Reg.</span>
                 </div>
                 
-                <button onclick="saveOfflineHTML()" class="h-9 w-9 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors shadow-sm group" title="Salvar HTML Completo">
+                <button onclick="saveOfflineHTML()" class="h-9 w-9 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm group" title="Salvar HTML Completo">
                     <i class="fa-solid fa-floppy-disk group-hover:scale-110 transition-transform"></i> <span class="hidden lg:inline text-xs font-bold">Salvar</span>
                 </button>
                 
-                <button onclick="clearData()" class="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Sair / Resetar">
+                <button onclick="clearData()" class="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Sair / Resetar">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col p-3 lg:p-6 gap-3 lg:gap-4 overflow-hidden relative bg-slate-50/50">
+        <main class="flex-1 flex flex-col p-3 lg:p-6 gap-3 lg:gap-4 overflow-hidden relative bg-slate-50/50 dark:bg-slate-950 transition-colors duration-300">
 
-            <!-- Upload / Input Screen (Visível por padrão se não houver dados) -->
-            <div id="uploadScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-100 backdrop-blur-sm p-4">
-                <div class="glass-panel w-full max-w-md overflow-hidden flex flex-col shadow-2xl animate-fade-in bg-white">
-                    <!-- Tabs -->
-                    <div class="flex border-b border-slate-100">
-                        <button onclick="switchTab('file')" id="tabFile" class="flex-1 py-4 text-xs font-bold uppercase tracking-wide text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30">Arquivo .JSON</button>
+            <!-- Upload / Input Screen -->
+            <div id="uploadScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 transition-all duration-300">
+                <div class="glass-panel w-full max-w-md overflow-hidden flex flex-col shadow-2xl animate-fade-in bg-white dark:bg-slate-900">
+                    <div class="flex border-b border-slate-100 dark:border-slate-800">
+                        <button onclick="switchTab('file')" id="tabFile" class="flex-1 py-4 text-xs font-bold uppercase tracking-wide text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30 dark:bg-indigo-900/20">Arquivo .JSON</button>
                         <button onclick="switchTab('text')" id="tabText" class="flex-1 py-4 text-xs font-bold uppercase tracking-wide text-slate-400 hover:text-indigo-600 transition-colors">Colar Texto</button>
                     </div>
 
-                    <!-- Panel: Arquivo -->
                     <div id="panelFile" class="p-8 text-center flex flex-col items-center">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                        <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-inner">
                             <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-500"></i>
                         </div>
-                        <h2 class="font-bold text-slate-800 text-lg mb-1">Carregar Dados</h2>
-                        <p class="text-slate-500 mb-6 text-xs px-4 leading-relaxed">Selecione o arquivo <code>resultado_oficial_v5.json</code> gerado pelo script Python.</p>
+                        <h2 class="font-bold text-slate-800 dark:text-white text-lg mb-1">Carregar Dados</h2>
+                        <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs px-4 leading-relaxed">Selecione o arquivo <code>resultado_oficial_v5.json</code>.</p>
                         
-                        <label class="group relative w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all text-xs uppercase flex items-center justify-center gap-2 overflow-hidden">
+                        <label class="group relative w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all text-xs uppercase flex items-center justify-center gap-2 overflow-hidden">
                             <span class="relative z-10 flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> Selecionar Arquivo</span>
                             <input type="file" id="fileInput" accept=".json" class="hidden">
                             <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
                         </label>
-                        <div id="loadingUpload" class="hidden mt-4 text-indigo-600 text-xs font-bold flex items-center gap-2">
+                        <div id="loadingUpload" class="hidden mt-4 text-indigo-600 dark:text-indigo-400 text-xs font-bold flex items-center gap-2">
                             <i class="fa-solid fa-circle-notch fa-spin"></i> Processando...
                         </div>
                     </div>
 
-                    <!-- Panel: Texto -->
                     <div id="panelText" class="p-5 hidden flex-col gap-3">
-                        <p class="text-xs text-slate-500 font-medium">Abra o arquivo .json, copie tudo e cole abaixo:</p>
-                        <textarea id="jsonTextInput" class="w-full h-48 p-3 text-[10px] font-mono border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none bg-slate-50 text-slate-600" placeholder='Ex: [{"id": "...", "name": "..."}]'></textarea>
-                        <button onclick="loadFromText()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl text-xs uppercase shadow transition-all flex items-center justify-center gap-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Abra o arquivo .json, copie tudo e cole abaixo:</p>
+                        <textarea id="jsonTextInput" class="w-full h-48 p-3 text-[10px] font-mono border border-slate-200 dark:border-slate-700 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300" placeholder='Ex: [{"id": "...", "name": "..."}]'></textarea>
+                        <button onclick="loadFromText()" class="w-full bg-slate-800 dark:bg-indigo-600 hover:bg-slate-900 dark:hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase shadow transition-all flex items-center justify-center gap-2">
                             <i class="fa-solid fa-bolt"></i> Carregar Dados
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Area (Oculto até carregar) -->
+            <!-- Dashboard Area -->
             <div id="dashboardScreen" class="hidden flex-col h-full gap-3 lg:gap-4">
                 
-                <!-- Top Toolbar -->
-                <div class="glass-panel p-2.5 flex flex-col lg:flex-row items-center justify-between gap-3 flex-none z-20">
+                <!-- Filters Bar -->
+                <div class="glass-panel p-2.5 flex flex-col lg:flex-row items-center justify-between gap-3 flex-none z-20 bg-white dark:bg-slate-900 transition-colors duration-300">
                     
-                    <!-- Filters Left -->
                     <div class="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-auto">
                         <div class="relative w-full sm:w-60 group">
-                            <label class="absolute -top-2 left-2 bg-white px-1 text-[9px] font-bold text-indigo-600 uppercase rounded z-10">Visualização</label>
-                            <select id="viewFilter" onchange="updateView()" class="w-full h-10 pl-3 pr-8 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:border-indigo-500 appearance-none shadow-sm cursor-pointer hover:border-indigo-300 transition-colors">
+                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase rounded z-10 transition-colors">Visualização</label>
+                            <select id="viewFilter" onchange="updateView()" class="w-full h-10 pl-3 pr-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 appearance-none shadow-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
                                 <option value="Geral">🌍 Classificação Geral</option>
                                 <option value="AC">🏢 Ampla Concorrência (AC)</option>
                                 <option value="PN">✊🏿 Pessoas Negras (PN)</option>
@@ -175,29 +215,38 @@
                             <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-slate-400 text-xs pointer-events-none group-hover:text-indigo-500"></i>
                         </div>
                         
-                        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 h-10 w-full sm:w-auto justify-between shadow-sm relative hover:border-indigo-300 transition-colors">
-                            <label class="absolute -top-2 left-2 bg-white px-1 text-[9px] font-bold text-slate-400 uppercase rounded">Vagas AC</label>
-                            <input type="number" id="vagasInput" class="w-16 bg-transparent text-sm font-bold text-center text-indigo-700 outline-none" value="161" onchange="initApp()">
+                        <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 h-10 w-full sm:w-auto justify-between shadow-sm relative hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
+                            <label class="absolute -top-2 left-2 bg-white dark:bg-slate-900 px-1 text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase rounded transition-colors">Vagas AC</label>
+                            <input type="number" id="vagasInput" class="w-16 bg-transparent text-sm font-bold text-center text-indigo-700 dark:text-indigo-400 outline-none" value="161" onchange="initApp()">
                         </div>
                     </div>
 
-                    <!-- Search Right -->
-                    <div class="flex items-center gap-2 w-full lg:w-auto">
-                        <div class="relative w-full lg:w-72 group">
-                            <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Buscar candidato ou inscrição..." class="w-full h-10 pl-9 pr-8 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm">
-                            <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                            
-                            <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-2 top-2.5 text-slate-400 hover:text-rose-500 p-1 rounded-full hover:bg-slate-100 transition-all hidden">
-                                <i class="fa-solid fa-times-circle text-sm"></i>
-                            </button>
+                    <!-- Quick Filter & Actions -->
+                    <div class="flex items-center gap-2 w-full lg:w-auto overflow-x-auto no-scrollbar">
+                        <!-- Quick Status Filters -->
+                        <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+                            <button onclick="setQuickFilter('ALL')" id="qf-ALL" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">Todos</button>
+                            <button onclick="setQuickFilter('VAGA')" id="qf-VAGA" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-emerald-600 transition-all">Vaga</button>
+                            <button onclick="setQuickFilter('CR')" id="qf-CR" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-sky-600 transition-all">CR</button>
                         </div>
 
-                        <!-- Mobile Toggle Sidebar -->
-                        <button id="btnToggleCharts" onclick="toggleSidebar()" class="lg:hidden h-10 w-10 flex-none flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded-lg shadow-sm active:bg-slate-100 transition-all">
+                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 flex-none"></div>
+
+                        <div class="relative w-full lg:w-56 group flex-none">
+                            <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Buscar..." class="w-full h-10 pl-9 pr-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:text-white transition-all shadow-sm">
+                            <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
+                            <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-2 top-2.5 text-slate-400 hover:text-rose-500 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-all hidden"><i class="fa-solid fa-times-circle text-sm"></i></button>
+                        </div>
+
+                        <button id="btnToggleCharts" onclick="toggleSidebar()" class="lg:hidden h-10 w-10 flex-none flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-lg shadow-sm active:bg-slate-100 transition-all">
                             <i class="fa-solid fa-chart-pie"></i>
                         </button>
 
-                        <button onclick="exportPDF()" class="h-10 w-10 flex-none flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-md hover:bg-rose-700 hover:shadow-lg transition-all transform active:scale-95" title="Baixar Lista em PDF">
+                        <button onclick="exportCSV()" class="h-10 w-10 flex-none flex items-center justify-center bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-all transform active:scale-95" title="Exportar CSV">
+                            <i class="fa-solid fa-file-csv"></i>
+                        </button>
+                        
+                        <button onclick="exportPDF()" class="h-10 w-10 flex-none flex items-center justify-center bg-rose-600 text-white rounded-lg shadow-md hover:bg-rose-700 transition-all transform active:scale-95" title="Exportar PDF">
                             <i class="fa-solid fa-file-pdf"></i>
                         </button>
                     </div>
@@ -206,41 +255,41 @@
                 <!-- Content Grid -->
                 <div class="flex-grow flex flex-col lg:flex-row gap-3 lg:gap-4 overflow-hidden min-h-0">
                     
-                    <!-- Sidebar (Estatísticas) - HIDDEN ON MOBILE BY DEFAULT -->
+                    <!-- Sidebar (Estatísticas) -->
                     <div id="sidebarContainer" class="hidden lg:flex lg:w-[320px] flex-none flex-col gap-3 overflow-y-auto lg:pr-1 custom-scroll transition-all duration-300">
                         
                         <!-- Cards Topo -->
                         <div class="grid grid-cols-2 gap-2 lg:gap-3">
-                            <div class="glass-panel p-3 border-l-4 border-emerald-500 bg-white">
-                                <p class="text-[9px] text-emerald-700 font-bold uppercase tracking-wider mb-1">Nota de Corte (Vaga)</p>
+                            <div class="glass-panel p-3 border-l-4 border-emerald-500 bg-white dark:bg-slate-900 shadow-sm">
+                                <p class="text-[9px] text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">Corte Vaga</p>
                                 <div class="flex justify-between items-baseline">
-                                    <p class="text-xl font-black text-slate-800 font-mono tracking-tight" id="kpiCutVaga">--</p>
-                                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded shadow-sm" id="posCutVaga">--</span>
+                                    <p class="text-xl font-black text-slate-800 dark:text-white font-mono tracking-tight" id="kpiCutVaga">--</p>
+                                    <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded shadow-sm" id="posCutVaga">--</span>
                                 </div>
                             </div>
-                            <div class="glass-panel p-3 border-l-4 border-sky-500 bg-white">
-                                <p class="text-[9px] text-sky-700 font-bold uppercase tracking-wider mb-1">Nota de Corte (CR)</p>
+                            <div class="glass-panel p-3 border-l-4 border-sky-500 bg-white dark:bg-slate-900 shadow-sm">
+                                <p class="text-[9px] text-sky-700 dark:text-sky-400 font-bold uppercase tracking-wider mb-1">Corte CR</p>
                                 <div class="flex justify-between items-baseline">
-                                    <p class="text-xl font-black text-slate-800 font-mono tracking-tight" id="kpiCutCR">--</p>
-                                    <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded shadow-sm" id="posCutCR">--</span>
+                                    <p class="text-xl font-black text-slate-800 dark:text-white font-mono tracking-tight" id="kpiCutCR">--</p>
+                                    <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 px-2 py-0.5 rounded shadow-sm" id="posCutCR">--</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card Stats -->
-                        <div class="glass-panel p-3 bg-white flex justify-between items-center shadow-sm">
+                        <div class="glass-panel p-3 bg-white dark:bg-slate-900 flex justify-between items-center shadow-sm">
                              <div>
-                                <p class="text-[9px] text-slate-400 font-bold uppercase">Candidatos Listados</p>
-                                <p class="text-lg font-black text-slate-700" id="kpiListTotal">0</p>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase">Listados</p>
+                                <p class="text-lg font-black text-slate-700 dark:text-slate-200" id="kpiListTotal">0</p>
                              </div>
                              <div class="text-right">
                                 <p class="text-[9px] text-slate-400 font-bold uppercase">Maior Nota</p>
-                                <p class="text-lg font-bold text-indigo-700 font-mono" id="kpiMax">0.00</p>
+                                <p class="text-lg font-bold text-indigo-700 dark:text-indigo-400 font-mono" id="kpiMax">0.00</p>
                              </div>
                         </div>
 
                         <!-- Charts Area -->
-                        <div class="glass-panel p-4 flex flex-col gap-5 flex-grow bg-white shadow-sm min-h-[250px]">
+                        <div class="glass-panel p-4 flex flex-col gap-5 flex-grow bg-white dark:bg-slate-900 shadow-sm min-h-[250px]">
                             <!-- Status Doughnut -->
                             <div>
                                 <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Situação</h3>
@@ -248,7 +297,7 @@
                                     <canvas id="statusChart"></canvas>
                                 </div>
                             </div>
-                            <hr class="border-slate-100">
+                            <hr class="border-slate-100 dark:border-slate-800">
                             <!-- Score Histogram -->
                             <div class="flex-grow flex flex-col">
                                 <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-bar"></i> Faixa de Notas</h3>
@@ -260,35 +309,39 @@
                     </div>
 
                     <!-- Main Table -->
-                    <div class="flex-grow glass-panel flex flex-col overflow-hidden relative min-h-0 bg-white shadow-sm">
-                        <div class="px-4 py-3 border-b border-slate-100 bg-white flex justify-between items-center flex-none sticky top-0 z-20">
+                    <div class="flex-grow glass-panel flex flex-col overflow-hidden relative min-h-0 bg-white dark:bg-slate-900 shadow-sm transition-colors duration-300">
+                        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center flex-none sticky top-0 z-20">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-indigo-600 rounded-full shadow-sm"></div>
-                                <h3 class="text-[10px] font-black text-slate-700 uppercase tracking-widest" id="tableHeader">Classificação</h3>
+                                <h3 class="text-[10px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest" id="tableHeader">Classificação</h3>
                             </div>
-                            <span class="text-[9px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded shadow-sm" id="loadedCount">0</span>
+                            <div class="flex items-center gap-2">
+                                <div id="cotasCounter" class="hidden sm:flex gap-1 text-[9px] font-bold text-slate-400"></div>
+                                <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded shadow-sm" id="loadedCount">0</span>
+                            </div>
                         </div>
 
-                        <div class="flex-grow overflow-y-auto relative custom-scroll bg-white" id="tableContainer">
+                        <div class="flex-grow overflow-y-auto relative custom-scroll bg-white dark:bg-slate-900" id="tableContainer">
                             <!-- Empty State -->
-                            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-300 h-full animate-fade-in">
-                                <i class="fa-solid fa-magnifying-glass text-4xl mb-3 text-slate-200"></i>
+                            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 h-full animate-fade-in">
+                                <i class="fa-solid fa-magnifying-glass text-4xl mb-3"></i>
                                 <p class="text-[10px] font-bold uppercase tracking-wide">Nenhum resultado encontrado</p>
                             </div>
 
                             <div class="mobile-scroll-x">
                                 <table class="w-full text-left border-collapse min-w-[600px] lg:min-w-0">
-                                    <thead class="bg-slate-50 sticky top-0 z-10 shadow-sm border-b border-slate-200">
+                                    <thead class="bg-slate-50 dark:bg-slate-800 sticky top-0 z-10 shadow-sm border-b border-slate-200 dark:border-slate-700">
                                         <tr>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase w-12 text-center">Pos</th>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase">Candidato</th>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase text-center w-24">Situação</th>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase text-right w-16 text-slate-400" title="Conhecimentos Específicos">Esp</th>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase text-right w-16 text-slate-400" title="Prova Discursiva">Disc</th>
-                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 uppercase text-right w-20 text-indigo-700">Final</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase w-12 text-center">Pos</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase w-12 text-center">Geral</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase">Candidato</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase text-center w-24">Situação</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase text-right w-16" title="Conhecimentos Específicos">Esp</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase text-right w-16" title="Prova Discursiva">Disc</th>
+                                            <th class="px-4 py-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase text-right w-20 text-indigo-700 dark:text-indigo-400">Final</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tableBody" class="divide-y divide-slate-50 text-xs text-slate-600"></tbody>
+                                    <tbody id="tableBody" class="divide-y divide-slate-50 dark:divide-slate-800 text-xs text-slate-600 dark:text-slate-300"></tbody>
                                 </table>
                             </div>
                             
@@ -302,66 +355,56 @@
             </div>
         </main>
 
-        <!-- Back to Top Button -->
-        <button id="backToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
+        <!-- Back to Top -->
+        <button id="backToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 p-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
 
-        <!-- MODAL DETAIL (CENTERED) -->
+        <!-- MODAL DETAIL -->
         <div id="detailModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center pointer-events-none p-4">
-            <!-- Overlay -->
             <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0 pointer-events-auto" onclick="closeModal()" id="modalOverlay"></div>
             
-            <!-- Card -->
-            <div id="modalContent" class="glass-modal w-full max-w-md bg-white p-6 rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 pointer-events-auto flex flex-col max-h-[90vh] relative">
+            <div id="modalContent" class="glass-modal w-full max-w-md bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 pointer-events-auto flex flex-col max-h-[90vh] relative">
                 
-                <!-- Close Button Absolute -->
-                <button onclick="closeModal()" class="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition-colors z-10">
+                <button onclick="closeModal()" class="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors z-10">
                     <i class="fa-solid fa-times"></i>
                 </button>
 
-                <!-- Header -->
                 <div class="mb-5 pr-8">
-                    <span class="text-[9px] font-bold text-white bg-slate-800 px-2 py-0.5 rounded uppercase tracking-widest inline-block mb-2 shadow-sm" id="mPos">#--</span>
-                    <h2 class="text-xl font-bold text-slate-800 leading-tight" id="mName">Nome do Candidato</h2>
+                    <span class="text-[9px] font-bold text-white bg-slate-800 dark:bg-slate-700 px-2 py-0.5 rounded uppercase tracking-widest inline-block mb-2 shadow-sm" id="mPos">#--</span>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white leading-tight" id="mName">Nome</h2>
                     <p class="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1">
                         <i class="fa-solid fa-id-card"></i> <span id="mId">--</span>
                     </p>
                 </div>
                 
-                <!-- Scrollable Content -->
                 <div class="overflow-y-auto custom-scroll pr-1 flex-1 space-y-5">
                     
-                    <!-- Main Status -->
-                    <div class="text-center bg-slate-50 p-3 rounded-xl border border-slate-100">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Classificação Atual</p>
+                    <div class="text-center bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Situação</p>
                         <div id="mStatusBadge" class="inline-block transform scale-110"></div>
                     </div>
 
-                    <!-- Scores Grid -->
-                    <div class="grid grid-cols-3 gap-0 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <div class="bg-indigo-50 p-3 text-center border-r border-indigo-100">
+                    <div class="grid grid-cols-3 gap-0 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 text-center border-r border-indigo-100 dark:border-indigo-800">
                             <p class="text-[9px] font-bold text-indigo-400 uppercase">Final</p>
-                            <p class="text-lg font-black text-indigo-700 leading-none mt-1" id="mTotal">--</p>
+                            <p class="text-lg font-black text-indigo-700 dark:text-indigo-400 leading-none mt-1" id="mTotal">--</p>
                         </div>
-                        <div class="bg-white p-3 text-center border-r border-slate-100">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Específica</p>
-                            <p class="text-sm font-bold text-slate-700 leading-none mt-1" id="mEsp">--</p>
+                        <div class="bg-white dark:bg-slate-800 p-3 text-center border-r border-slate-100 dark:border-slate-700">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Esp.</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mEsp">--</p>
                         </div>
-                        <div class="bg-white p-3 text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Discursiva</p>
-                            <p class="text-sm font-bold text-slate-700 leading-none mt-1" id="mDisc">--</p>
+                        <div class="bg-white dark:bg-slate-800 p-3 text-center">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Disc.</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-none mt-1" id="mDisc">--</p>
                         </div>
                     </div>
 
-                    <!-- Detailed Info / Cotas -->
                     <div>
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check"></i> Detalhes de Cotas
+                        <h4 class="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-slate-800 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check"></i> Detalhes
                         </h4>
-                        <div id="mCotasInfo" class="flex flex-col gap-2">
-                            <!-- Injected JS -->
-                        </div>
+                        <div id="mCotasInfo" class="flex flex-col gap-2"></div>
                     </div>
                 </div>
             </div>
@@ -369,7 +412,7 @@
 
     </div>
 
-    <!-- AREA PARA JSON EMBUTIDO (ALL-IN-ONE) -->
+    <!-- JSON DATA -->
     <script id="json-data" type="application/json">
         [
   {
@@ -72375,9 +72418,45 @@
         let allData = [], calculatedData = [], currentViewList = [], renderedCount = 0;
         let chartDist = null, chartStatus = null;
         let searchTimeout = null;
-        let observer = null;
+        let quickFilter = 'ALL'; // ALL, VAGA, CR, ELIM
 
-        // --- UI HELPERS ---
+        // --- DARK MODE ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if(html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateCharts();
+        }
+
+        // Init Theme
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // --- CORE UI ---
+        function setQuickFilter(type) {
+            quickFilter = type;
+            // Update UI buttons
+            ['ALL', 'VAGA', 'CR'].forEach(k => {
+                const btn = document.getElementById(`qf-${k}`);
+                if(k === type) {
+                    btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm transform scale-105";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded text-[10px] font-bold uppercase text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
+                }
+            });
+            renderedCount = 0;
+            document.getElementById('tableBody').innerHTML = '';
+            renderBatch();
+        }
+
         function toggleClearBtn() {
             const val = document.getElementById('searchInput').value;
             const btn = document.getElementById('clearSearchBtn');
@@ -72406,60 +72485,38 @@
             const sidebar = document.getElementById('sidebarContainer');
             const btn = document.getElementById('btnToggleCharts');
             
-            const isHidden = sidebar.classList.contains('hidden');
-            
-            if(isHidden) {
+            if(sidebar.classList.contains('hidden')) {
                 sidebar.classList.remove('hidden');
                 sidebar.classList.add('flex');
-                // Visual Cue: Active state
                 btn.classList.add('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
                 btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
             } else {
                 sidebar.classList.add('hidden');
                 sidebar.classList.remove('flex');
-                // Visual Cue: Inactive state
                 btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
                 btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
             }
         }
 
-        // Back To Top Logic
-        const tableContainer = document.getElementById('tableContainer');
-        const backToTopBtn = document.getElementById('backToTopBtn');
-
-        tableContainer.addEventListener('scroll', () => {
-            if (tableContainer.scrollTop > 300) {
-                backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
-            } else {
-                backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
-            }
-        });
-
-        function scrollToTop() {
-            tableContainer.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Corrige bug visual ao redimensionar
         window.addEventListener('resize', () => {
             if(window.innerWidth >= 1024) {
                 document.getElementById('sidebarContainer').classList.remove('hidden');
                 document.getElementById('sidebarContainer').classList.add('flex');
             } else {
-                // Mobile default: Hidden
                 document.getElementById('sidebarContainer').classList.add('hidden');
                 document.getElementById('sidebarContainer').classList.remove('flex');
-                // Reset button style
                 const btn = document.getElementById('btnToggleCharts');
-                btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                if(btn) {
+                    btn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
+                    btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                }
             }
         });
 
         function switchTab(tab) {
             const btnFile = document.getElementById('tabFile');
             const btnText = document.getElementById('tabText');
-            
-            const activeClass = "flex-1 py-4 text-xs font-bold uppercase tracking-wide text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30";
+            const activeClass = "flex-1 py-4 text-xs font-bold uppercase tracking-wide text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30 dark:bg-indigo-900/20";
             const inactiveClass = "flex-1 py-4 text-xs font-bold uppercase tracking-wide text-slate-400 hover:text-indigo-600 transition-colors";
 
             btnFile.className = tab === 'file' ? activeClass : inactiveClass;
@@ -72471,21 +72528,17 @@
             document.getElementById('panelText').classList.toggle('flex', tab === 'text');
         }
 
-        // --- INITIALIZATION LOGIC ---
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             let foundData = false;
-
-            // 1. Tenta carregar JSON Embutido
             try {
                 const embedded = document.getElementById('json-data').textContent.trim();
                 if(embedded && embedded.length > 50 && embedded.startsWith('[')) {
-                    console.log("JSON Embutido detectado.");
                     processJSON(embedded);
                     foundData = true;
                 }
-            } catch(e) { console.log("Sem JSON embutido."); }
+            } catch(e) {}
 
-            // 2. Tenta LocalStorage se não achou embutido
             if (!foundData) {
                 try {
                     const cached = localStorage.getItem('cnu_v16_data');
@@ -72500,13 +72553,21 @@
                 } catch(e) {}
             }
 
-            // 3. Se nada achou, garante que a tela de upload apareça (default state)
-            if(!foundData) {
-                document.getElementById('uploadScreen').classList.remove('hidden');
-            }
+            if(!foundData) document.getElementById('uploadScreen').classList.remove('hidden');
+            
+            // Scroll to Top Listener
+            const tableContainer = document.getElementById('tableContainer');
+            tableContainer.addEventListener('scroll', () => {
+                if (tableContainer.scrollTop > 300) {
+                    document.getElementById('backToTopBtn').classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                } else {
+                    document.getElementById('backToTopBtn').classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                }
+            });
         });
 
-        // Input Handlers
+        function scrollToTop() { document.getElementById('tableContainer').scrollTo({ top: 0, behavior: 'smooth' }); }
+
         document.getElementById('fileInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -72518,7 +72579,7 @@
 
         function loadFromText() {
             const txt = document.getElementById('jsonTextInput').value;
-            if(!txt.trim()) return alert("Por favor, cole o JSON no campo.");
+            if(!txt.trim()) return alert("Cole o JSON.");
             processJSON(txt);
         }
 
@@ -72526,18 +72587,17 @@
             try {
                 let clean = jsonString.replace(/<!--[\s\S]*?-->/g, "").trim();
                 const json = JSON.parse(clean);
-                if(!Array.isArray(json)) throw new Error("Formato inválido");
+                if(!Array.isArray(json)) throw new Error("Inválido");
                 allData = json;
                 try { localStorage.setItem('cnu_v16_data', JSON.stringify(allData)); } catch(e){}
                 initApp();
             } catch(err) { 
-                alert("Erro ao ler JSON. Verifique o arquivo."); 
+                alert("JSON Inválido."); 
                 document.getElementById('loadingUpload').classList.add('hidden');
             }
         }
 
         function initApp() {
-            // Esconde upload e mostra dashboard
             document.getElementById('uploadScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.remove('hidden');
             document.getElementById('dashboardScreen').classList.add('flex');
@@ -72545,7 +72605,6 @@
             document.getElementById('statusBadge').classList.add('flex');
             document.getElementById('dbCount').innerText = allData.length;
             
-            // Ordenação Oficial
             allData.sort((a,b) => {
                 if (b.total_score !== a.total_score) return b.total_score - a.total_score;
                 if ((b.esp_score||0) !== (a.esp_score||0)) return (b.esp_score||0) - (a.esp_score||0);
@@ -72568,7 +72627,7 @@
             observer.observe(document.getElementById('scrollSentinel'));
         }
 
-        // --- CORE LOGIC ---
+        // --- LOGIC ---
         function processCascading() {
             let filled = { 'AC': 0, 'PN': 0, 'PCD': 0, 'PI': 0, 'PQ': 0 };
             let limitAC = parseInt(document.getElementById('vagasInput').value) || 161;
@@ -72638,24 +72697,25 @@
             updateCharts();
             
             document.getElementById('tableBody').innerHTML = '';
-            document.getElementById('tableContainer').scrollTop = 0;
             renderedCount = 0;
-            
-            if(currentViewList.length === 0) {
-                document.getElementById('emptyState').classList.remove('hidden');
-                document.getElementById('scrollSentinel').style.display = 'none';
-            } else {
-                document.getElementById('emptyState').classList.add('hidden');
-                document.getElementById('scrollSentinel').style.display = 'flex';
-                renderBatch();
-            }
+            renderBatch();
         }
 
         function updateKPIs(filter) {
             const total = currentViewList.length;
             document.getElementById('kpiListTotal').innerText = total;
-            if(total===0) return;
+            
+            // Cotas Counter
+            let counts = {};
+            currentViewList.forEach(c => {
+                c.cotas.forEach(cot => {
+                    if(cot!=='AC') counts[cot] = (counts[cot]||0)+1;
+                });
+            });
+            const counterHtml = Object.entries(counts).map(([k,v]) => `${k}:${v}`).join(' | ');
+            document.getElementById('cotasCounter').innerText = counterHtml;
 
+            if(total===0) return;
             document.getElementById('kpiMax').innerText = currentViewList[0].total_score.toFixed(2);
 
             let targetVaga = filter === 'Geral' ? 'VAGA' : `VAGA ${filter}`;
@@ -72682,7 +72742,16 @@
             const spinner = document.getElementById('spinnerIcon');
             const sentinel = document.getElementById('scrollSentinel');
 
-            let list = search ? currentViewList.filter(c => c.name.toLowerCase().includes(search) || c.id.includes(search)) : currentViewList;
+            // Apply Search + Quick Filter
+            let list = currentViewList.filter(c => {
+                const matchSearch = !search || c.name.toLowerCase().includes(search) || c.id.includes(search);
+                if(!matchSearch) return false;
+                
+                if(quickFilter === 'ALL') return true;
+                if(quickFilter === 'VAGA') return c.computedStatus.label.includes('VAGA');
+                if(quickFilter === 'CR') return c.computedStatus.label.includes('CR');
+                return false;
+            });
 
             if (list.length === 0) {
                 document.getElementById('emptyState').classList.remove('hidden');
@@ -72695,12 +72764,6 @@
 
             if (renderedCount >= list.length) { 
                 sentinel.style.display = 'none'; 
-                // Exibe mensagem de fim de lista se tiver itens
-                if (renderedCount > 0) {
-                    const endMsg = document.createElement('tr');
-                    endMsg.innerHTML = `<td colspan="6" class="text-center py-4 text-xs text-slate-400 font-medium">Fim da lista (${list.length} registros)</td>`;
-                    tbody.appendChild(endMsg);
-                }
                 return; 
             }
             spinner.classList.remove('hidden');
@@ -72711,66 +72774,68 @@
             chunk.forEach((c, i) => {
                 let pos = renderedCount + i + 1;
                 
-                // --- LÓGICA DE BADGES RESTAURADA (Estilo Original Completo) ---
+                // Badges Lógica
                 let badgesInfo = '';
-                
                 if(c.cotas.length === 1 && c.cotas[0] === 'AC') {
                      badgesInfo = `<span class="badge tag-ac">AC</span>`;
                 } else {
                     c.cotas.forEach(q => {
                         if(q === 'AC') return;
-                        
                         let st = c.status_map ? c.status_map[q] : 'NONE';
                         let colorClass = `tag-${q.toLowerCase()}`;
                         let styleExtra = '';
                         let icon = '';
 
                         if (st === 'DENIED') { 
-                            colorClass = 'bg-red-50 text-red-600 border-red-200'; 
+                            colorClass = 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'; 
                             styleExtra = 'opacity: 0.7; text-decoration: line-through;';
                             icon = '<i class="fa-solid fa-xmark ml-1"></i>';
                         } else if (st === 'ABSENT') {
-                            colorClass = 'bg-slate-100 text-slate-400 border-slate-200';
+                            colorClass = 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700';
                             styleExtra = 'opacity: 0.7;';
                             icon = ' (Aus)';
                         } else if (st === 'CONFIRMED') {
-                            icon = '<i class="fa-solid fa-check ml-1 text-emerald-600"></i>';
+                            icon = '<i class="fa-solid fa-check ml-1 text-emerald-600 dark:text-emerald-400"></i>';
                         }
-                        
                         badgesInfo += `<span class="badge ${colorClass} mr-1 mb-1" style="${styleExtra}" title="Status: ${st}">${q}${icon}</span>`;
                     });
                 }
-
-                // --- TEXTO COMPLETO DE SITUAÇÃO (Full Tooltip) ---
-                let verifInfo = [];
-                // Lógica original de tooltip texto
-                if(c.res_pn_text && c.res_pn_text !== '-') verifInfo.push(`<span class="text-orange-700 font-semibold">PN: ${c.res_pn_text}</span>`);
-                if(c.res_pcd_text && c.res_pcd_text !== '-') verifInfo.push(`<span class="text-blue-700 font-semibold">PCD: ${c.res_pcd_text}</span>`);
-                if(c.res_pi_text && c.res_pi_text !== '-') verifInfo.push(`<span class="text-emerald-700 font-semibold">PI: ${c.res_pi_text}</span>`);
-                if(c.res_pq_text && c.res_pq_text !== '-') verifInfo.push(`<span class="text-purple-700 font-semibold">PQ: ${c.res_pq_text}</span>`);
-                
-                let verifHtml = verifInfo.length ? `<div class="mt-1 text-[9px] text-slate-500 italic leading-tight">${verifInfo.join(' • ')}</div>` : '';
 
                 let st = c.computedStatus;
                 let pillClass = 'st-elim';
                 if (st.label.includes('VAGA')) pillClass = 'st-vaga'; 
                 else if (st.label.includes('CR')) pillClass = 'st-cr';
 
+                // Erros/Avisos Tooltip Texto
+                let errorHtml = '';
+                let errorMsgs = [];
+                const checkErr = (txt, type) => {
+                    if(txt && (txt.toLowerCase().includes('não') || txt.toLowerCase().includes('ausente'))) errorMsgs.push(`${type}`);
+                };
+                checkErr(c.res_pn_text, 'PN');
+                checkErr(c.res_pcd_text, 'PCD');
+                checkErr(c.res_pi_text, 'PI');
+                checkErr(c.res_pq_text, 'PQ');
+                if(errorMsgs.length > 0) {
+                    errorHtml = `<div class="mt-0.5 text-[9px] text-red-500 dark:text-red-400 font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i>Negado: ${errorMsgs.join(', ')}</div>`;
+                }
+
                 let tr = document.createElement('tr');
-                tr.className = "hover-row border-b border-slate-50 transition-all fade-in bg-white";
+                tr.className = "hover-row border-b border-slate-50 dark:border-slate-800 transition-all fade-in bg-white dark:bg-slate-900";
                 tr.onclick = () => openModal(c, pos, pillClass);
                 
                 tr.innerHTML = `
-                    <td class="px-4 py-2.5 text-center font-bold text-slate-400 text-[10px] bg-slate-50/50">${pos}</td>
+                    <td class="px-4 py-2.5 text-center font-bold text-slate-400 dark:text-slate-500 text-[10px] bg-slate-50/50 dark:bg-slate-800/50">${pos}</td>
+                    <td class="px-4 py-2.5 text-center text-[10px] text-slate-400 dark:text-slate-500 font-mono">#${c.pos_geral}</td>
                     <td class="px-4 py-2.5">
-                        <div class="font-bold text-slate-700 text-xs truncate max-w-[150px] lg:max-w-none">${c.name}</div>
+                        <div class="font-bold text-slate-700 dark:text-slate-200 text-xs truncate max-w-[150px] lg:max-w-none">${c.name}</div>
                         <div class="mt-0.5 flex flex-wrap gap-1">${badgesInfo}</div>
-                        ${verifHtml}
+                        ${errorHtml}
                     </td>
                     <td class="px-4 py-2.5 text-center"><span class="pill ${pillClass}">${st.label}</span></td>
-                    <td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400">${c.esp_score.toFixed(1)}</td>
-                    <td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400">${c.disc_score.toFixed(1)}</td>
-                    <td class="px-4 py-2.5 text-right font-extrabold font-mono text-xs text-indigo-700">${c.total_score.toFixed(2)}</td>
+                    <td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">${c.esp_score.toFixed(1)}</td>
+                    <td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">${c.disc_score.toFixed(1)}</td>
+                    <td class="px-4 py-2.5 text-right font-extrabold font-mono text-xs text-indigo-700 dark:text-indigo-400">${c.total_score.toFixed(2)}</td>
                 `;
                 fragment.appendChild(tr);
             });
@@ -72781,10 +72846,10 @@
             spinner.classList.add('hidden');
         }
 
-        // --- MODAL LOGIC (CENTERED) ---
+        // --- MODAL ---
         function openModal(c, pos, pillClass) {
             document.getElementById('mName').innerText = c.name;
-            document.getElementById('mPos').innerText = `Posição #${pos}`;
+            document.getElementById('mPos').innerText = `#${pos}`;
             document.getElementById('mId').innerText = c.id;
             document.getElementById('mTotal').innerText = c.total_score.toFixed(2);
             document.getElementById('mEsp').innerText = c.esp_score.toFixed(2);
@@ -72792,7 +72857,6 @@
             
             document.getElementById('mStatusBadge').innerHTML = `<span class="pill ${pillClass} text-sm px-4 py-1">${c.computedStatus.label}</span>`;
 
-            // Cotas Detalhadas no Modal (Textos Completos)
             const cotasContainer = document.getElementById('mCotasInfo');
             cotasContainer.innerHTML = '';
             
@@ -72800,7 +72864,7 @@
             const addDetail = (label, text, colorClass) => {
                 if(text && text !== '-') {
                     cotasContainer.innerHTML += `
-                        <div class="text-xs text-slate-600 bg-slate-50 p-2 rounded border-l-4 ${colorClass}">
+                        <div class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2 rounded border-l-4 ${colorClass}">
                             <strong class="uppercase text-[10px] opacity-70">${label}</strong><br/>${text}
                         </div>`;
                     hasDetails = true;
@@ -72819,7 +72883,6 @@
             const overlay = document.getElementById('modalOverlay');
             
             modal.classList.remove('hidden', 'pointer-events-none');
-            // Animação de entrada
             requestAnimationFrame(() => {
                 overlay.style.opacity = '1';
                 content.classList.remove('scale-95', 'opacity-0');
@@ -72841,12 +72904,15 @@
             }, 300);
         }
 
-        // --- CHARTS ---
+        // --- CHARTS & EXPORT ---
         function updateCharts() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? '#334155' : '#e2e8f0';
+
             const ctxStatus = document.getElementById('statusChart').getContext('2d');
             const ctxScore = document.getElementById('scoreChart').getContext('2d');
 
-            // 1. Status Data
             let counts = { VAGA: 0, CR: 0, ELIM: 0 };
             let scores = [];
             currentViewList.forEach(c => {
@@ -72863,7 +72929,7 @@
                     labels: ['Vaga', 'CR', 'Outros'],
                     datasets: [{ 
                         data: [counts.VAGA, counts.CR, counts.ELIM], 
-                        backgroundColor: ['#10b981', '#0ea5e9', '#f1f5f9'], 
+                        backgroundColor: ['#10b981', '#0ea5e9', isDark ? '#334155' : '#f1f5f9'], 
                         borderWidth: 0,
                         hoverOffset: 4
                     }]
@@ -72872,18 +72938,15 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     cutout: '75%', 
-                    plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: {size: 9}, color: '#94a3b8' } } } 
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: {size: 9}, color: textColor } } } 
                 }
             });
 
-            // 2. Score Histogram (New Feature)
-            // Cria faixas de 2 em 2 pontos (ex: 70-72, 72-74)
             const minScore = Math.floor(Math.min(...scores));
             const maxScore = Math.ceil(Math.max(...scores));
             const step = 2;
             const labels = [];
             const dataBins = [];
-            
             for(let i = minScore; i < maxScore; i+=step) {
                 labels.push(`${i}-${i+step}`);
                 dataBins.push(scores.filter(s => s >= i && s < i+step).length);
@@ -72906,23 +72969,47 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { font: {size: 8}, color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { font: {size: 8}, color: textColor } },
                         y: { display: false }
                     }
                 }
             });
         }
 
+        function exportCSV() {
+            const headers = ['Pos', 'Nome', 'Inscricao', 'Nota Final', 'Especifica', 'Discursiva', 'Cotas', 'Situacao'];
+            const rows = currentViewList.map((c, i) => [
+                i + 1,
+                `"${c.name}"`,
+                c.id,
+                c.total_score.toFixed(2).replace('.',','),
+                c.esp_score.toFixed(2).replace('.',','),
+                c.disc_score.toFixed(2).replace('.',','),
+                `"${c.cotas.join(', ')}"`,
+                `"${c.computedStatus.label}"`
+            ]);
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + headers.join(";") + "\n" 
+                + rows.map(e => e.join(";")).join("\n");
+                
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `CNU_Bloco7_Export.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function exportPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const filterName = document.getElementById('viewFilter').options[document.getElementById('viewFilter').selectedIndex].text;
-            const cutVaga = document.getElementById('kpiCutVaga').innerText;
-            const cutCR = document.getElementById('kpiCutCR').innerText;
-
+            
             doc.setFillColor(30, 41, 59); doc.rect(0, 0, 210, 30, 'F');
             doc.setTextColor(255, 255, 255); doc.setFontSize(14); doc.text("Classificação Oficial CNU - Bloco 7", 14, 15);
-            doc.setFontSize(9); doc.text(`Lista: ${filterName} | Vaga: ${cutVaga} | CR: ${cutCR}`, 14, 24);
+            doc.setFontSize(9); doc.text(`Lista: ${filterName}`, 14, 24);
 
             const rows = currentViewList.map((c, i) => [
                 i + 1, c.name, c.cotas.filter(x=>x!='AC').join(','), c.computedStatus.label, c.total_score.toFixed(2)
@@ -72938,12 +73025,9 @@
         function saveOfflineHTML() {
             if(allData.length === 0) return alert("Carregue dados primeiro.");
             let htmlContent = document.documentElement.outerHTML;
-            
-            // Injeta dados no script tag
             const dataString = JSON.stringify(allData);
             const scriptTag = `<script id="json-data" type="application/json">${dataString}<\/script>`; 
             htmlContent = htmlContent.replace(/<script id="json-data" type="application\/json">[\s\S]*?<\/script>/, scriptTag);
-            
             const blob = new Blob([htmlContent], {type: 'text/html'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Painel_CNU_All_In_One.html'; a.click();
         }
