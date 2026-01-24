@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel CNU - Bloco 7 | Ultimate 5.0</title>
+    <title>Painel CNU - Bloco 7 | Ultimate 5.5</title>
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,6 +52,10 @@
         @media (max-width: 1024px) {
             .mobile-stack { flex-direction: column; }
             .mobile-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            /* Ajuste Header Mobile */
+            header { height: auto; min-height: 4rem; padding-top: 0.5rem; padding-bottom: 0.5rem; flex-wrap: wrap; }
+            .header-title-container { width: 100%; margin-bottom: 0.5rem; justify-content: center; text-align: center; }
+            .header-actions-container { width: 100%; justify-content: center; gap: 0.5rem; }
         }
         
         /* Animations */
@@ -64,9 +68,9 @@
     <div class="layout-container">
         
         <!-- Header -->
-        <header class="bg-white border-b border-slate-200 h-16 flex-none z-50 flex items-center justify-between px-4 lg:px-6 shadow-sm relative">
-            <div class="flex items-center gap-2 lg:gap-3 overflow-hidden">
-                <div class="bg-slate-800 text-white p-2 rounded-lg shadow-lg flex-none transform transition hover:scale-105">
+        <header class="bg-white border-b border-slate-200 flex-none z-50 flex items-center justify-between px-4 lg:px-6 shadow-sm relative transition-all">
+            <div class="flex items-center gap-2 lg:gap-3 overflow-hidden header-title-container">
+                <div class="bg-slate-800 text-white p-2 rounded-lg shadow-lg flex-none transform transition hover:scale-105 hidden lg:block">
                     <i class="fa-solid fa-chart-simple"></i>
                 </div>
                 <div class="flex-none">
@@ -75,12 +79,12 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 header-actions-container">
                 <!-- FGV Links -->
-                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-8 w-8 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm" title="Site Oficial do Concurso">
+                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-8 px-2 lg:px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm" title="Site Oficial do Concurso">
                     <i class="fa-solid fa-globe"></i> <span class="hidden lg:inline text-xs font-bold">Edital</span>
                 </a>
-                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-8 w-8 lg:w-auto lg:px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm" title="Área do Candidato">
+                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-8 px-2 lg:px-3 flex items-center justify-center gap-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm" title="Área do Candidato">
                     <i class="fa-solid fa-user-lock"></i> <span class="hidden lg:inline text-xs font-bold">Login</span>
                 </a>
 
@@ -288,6 +292,11 @@
                 </div>
             </div>
         </main>
+
+        <!-- Back to Top Button -->
+        <button id="backToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
 
         <!-- MODAL DETAIL (CENTERED) -->
         <div id="detailModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center pointer-events-none p-4">
@@ -72405,6 +72414,22 @@
             }
         }
 
+        // Back To Top Logic
+        const tableContainer = document.getElementById('tableContainer');
+        const backToTopBtn = document.getElementById('backToTopBtn');
+
+        tableContainer.addEventListener('scroll', () => {
+            if (tableContainer.scrollTop > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }
+        });
+
+        function scrollToTop() {
+            tableContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         // Corrige bug visual ao redimensionar
         window.addEventListener('resize', () => {
             if(window.innerWidth >= 1024) {
@@ -72659,7 +72684,16 @@
                 sentinel.style.display = 'flex';
             }
 
-            if (renderedCount >= list.length) { sentinel.style.display = 'none'; return; }
+            if (renderedCount >= list.length) { 
+                sentinel.style.display = 'none'; 
+                // Exibe mensagem de fim de lista se tiver itens
+                if (renderedCount > 0) {
+                    const endMsg = document.createElement('tr');
+                    endMsg.innerHTML = `<td colspan="6" class="text-center py-4 text-xs text-slate-400 font-medium">Fim da lista (${list.length} registros)</td>`;
+                    tbody.appendChild(endMsg);
+                }
+                return; 
+            }
             spinner.classList.remove('hidden');
 
             const chunk = list.slice(renderedCount, renderedCount + PAGE_SIZE);
