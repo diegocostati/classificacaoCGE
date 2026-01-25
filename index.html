@@ -35,8 +35,7 @@
 
     <script>
         // --- CONFIGURAÇÃO DA API GEMINI ---
-        // Cole sua chave aqui se quiser liberar para todos (com restrição de domínio no Google Cloud)
-        const SYSTEM_API_KEY = ""; 
+        const SYSTEM_API_KEY = "AIzaSyB3-Ejl-N27DPueARZmaXrUVFgw8hCbXnQ"; 
 
         // --- MANIFEST DINÂMICO ---
         const manifestData = {
@@ -115,13 +114,34 @@
         
         .custom-checkbox { @apply w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600; }
 
+        /* Mobile specific styles */
         @media (max-width: 1024px) {
             .mobile-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            header { height: auto; min-height: 4rem; padding: 0.75rem; flex-wrap: wrap; justify-content: center; }
-            .header-title-container { width: 100%; margin-bottom: 0.75rem; justify-content: center; text-align: center; }
-            .header-actions-container { width: 100%; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+            header { height: auto; min-height: 4rem; padding: 0.75rem; flex-wrap: wrap; justify-content: space-between; }
+            .header-title-container { width: auto; margin-bottom: 0; justify-content: flex-start; text-align: left; }
+            .header-actions-desktop { display: none !important; }
+            .header-hamburger { display: flex !important; }
+        }
+        @media (min-width: 1025px) {
+            .header-hamburger { display: none !important; }
+            .header-actions-desktop { display: flex !important; }
         }
         
+        /* Floating Buttons */
+        .scroll-btn-group {
+            position: fixed;
+            bottom: 5.5rem; /* Acima do FAB Compare se existir, ou no canto */
+            right: 1.5rem;
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .scroll-btn {
+            @apply p-2 bg-white/90 dark:bg-slate-800/90 text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full shadow-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all h-10 w-10 flex items-center justify-center backdrop-blur-sm;
+        }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
@@ -184,11 +204,22 @@
                         <span class="hidden lg:inline text-slate-300 dark:text-slate-600 mx-1">|</span>
                         <span class="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded text-[10px] lg:text-xs">Bloco 7</span>
                     </h1>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Justiça e Defesa</p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5 hidden sm:block">Justiça e Defesa</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2 lg:gap-3 header-actions-container">
+            <!-- Mobile Hamburger -->
+            <div class="header-hamburger items-center gap-3">
+                <button onclick="toggleAI()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-md hover:shadow-lg transition-all animate-pulse-slow">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <button onclick="toggleMobileMenu()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Desktop Actions -->
+            <div class="header-actions-desktop items-center gap-2 lg:gap-3">
                 
                 <!-- AI Assistant -->
                 <button onclick="toggleAI()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all animate-pulse-slow" title="IA Insights">
@@ -242,6 +273,31 @@
             </div>
         </header>
 
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden fixed top-16 left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 flex-col p-4 shadow-xl animate-fade-in lg:hidden">
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <a href="https://conhecimento.fgv.br/cpnu2" target="_blank" class="h-10 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 font-bold text-xs"><i class="fa-solid fa-globe"></i> Edital</a>
+                <a href="https://inscricao-cpnu.conhecimento.fgv.br/" target="_blank" class="h-10 flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-300 font-bold text-xs"><i class="fa-solid fa-user-lock"></i> Login</a>
+            </div>
+            <div class="flex flex-col gap-3">
+                <button onclick="toggleCompareMode(); toggleMobileMenu()" class="h-10 flex items-center gap-3 px-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-scale-balanced text-indigo-500 w-5"></i> Modo Comparação
+                </button>
+                <button onclick="toggleDarkMode(); toggleMobileMenu()" class="h-10 flex items-center gap-3 px-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-moon text-indigo-500 w-5"></i> Alternar Tema
+                </button>
+                <button onclick="saveOfflineHTML(); toggleMobileMenu()" class="h-10 flex items-center gap-3 px-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-floppy-disk text-indigo-500 w-5"></i> Salvar Offline
+                </button>
+                <button onclick="shareApp(); toggleMobileMenu()" class="h-10 flex items-center gap-3 px-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <i class="fa-brands fa-whatsapp text-green-500 w-5"></i> Compartilhar App
+                </button>
+                <button onclick="clearData()" class="h-10 flex items-center gap-3 px-4 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium text-red-500">
+                    <i class="fa-solid fa-power-off w-5"></i> Sair / Limpar Dados
+                </button>
+            </div>
+        </div>
+
         <!-- Main -->
         <main class="flex-1 flex flex-col p-3 lg:p-6 gap-3 lg:gap-4 overflow-hidden relative bg-slate-50/50 dark:bg-slate-950 transition-colors duration-300">
 
@@ -249,6 +305,16 @@
             <button id="fabCompare" onclick="executeComparison()" class="fixed bottom-24 right-6 z-50 h-14 w-14 bg-indigo-600 text-white rounded-full shadow-xl flex items-center justify-center transform scale-0 transition-transform duration-300">
                 <i class="fa-solid fa-check-double text-xl"></i>
             </button>
+
+            <!-- Scroll Buttons -->
+            <div class="scroll-btn-group opacity-0 translate-y-10 pointer-events-none" id="scrollGroup">
+                <button onclick="scrollToTop()" class="scroll-btn" title="Topo">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button onclick="scrollToBottom()" class="scroll-btn" title="Fim">
+                    <i class="fa-solid fa-arrow-down"></i>
+                </button>
+            </div>
 
             <!-- Upload -->
             <div id="uploadScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 transition-all duration-300">
@@ -449,7 +515,6 @@
     </div>
 
     <!-- JSON DATA -->
-    <!-- COLE O JSON DENTRO DO COLCHETE ABAIXO E NÃO APAGUE A TAG </script> -->
     <script id="json-data" type="application/json">
         [
   {
@@ -72462,6 +72527,27 @@
         // --- DATA DE ATUALIZAÇÃO ---
         document.getElementById('lastUpdateDate').innerText = new Date().toLocaleDateString('pt-BR');
 
+        // --- MOBILE MENU LOGIC ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            }
+        }
+
+        // --- SCROLL LOGIC ---
+        function scrollToTop() {
+            document.getElementById('tableContainer').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function scrollToBottom() {
+            const container = document.getElementById('tableContainer');
+            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+        }
+
         // --- COMPARE LOGIC ---
         let compareMode = false;
         let selectedForCompare = [];
@@ -72493,27 +72579,32 @@
                 selectedForCompare = selectedForCompare.filter(i => i !== id);
             } else {
                 if(selectedForCompare.length >= 2) {
-                    selectedForCompare.shift(); // Remove o primeiro sem atualizar visual ainda
+                    const removedId = selectedForCompare.shift();
+                    updateRowVisuals(removedId, false);
                 }
                 selectedForCompare.push(id);
             }
             
-            // 2. Atualizar visual de TODAS as linhas visíveis para garantir sincronia
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const rId = row.id.replace('row-', '');
-                const isSel = selectedForCompare.includes(rId);
-                
-                // Atualizar cor de fundo
-                if(isSel) row.classList.add('bg-indigo-50', 'dark:bg-indigo-900/40');
-                else row.classList.remove('bg-indigo-50', 'dark:bg-indigo-900/40');
-
-                // Atualizar Checkbox
-                const cb = row.querySelector('.custom-checkbox');
-                if(cb) cb.checked = isSel;
-            });
+            // 2. Atualizar visual apenas da linha clicada
+            const isSelected = selectedForCompare.includes(id);
+            updateRowVisuals(id, isSelected);
 
             // 3. Trigger
             if(selectedForCompare.length === 2) setTimeout(executeComparison, 500);
+        }
+
+        function updateRowVisuals(id, isSelected) {
+            const row = document.getElementById(`row-${id}`);
+            if(!row) return;
+            
+            if(isSelected) {
+                row.classList.add('bg-indigo-50', 'dark:bg-indigo-900/40');
+            } else {
+                row.classList.remove('bg-indigo-50', 'dark:bg-indigo-900/40');
+            }
+
+            const checkbox = row.querySelector('.custom-checkbox');
+            if(checkbox) checkbox.checked = isSelected;
         }
 
         function executeComparison() {
@@ -72839,16 +72930,16 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const tableContainer = document.getElementById('tableContainer');
+            const scrollGroup = document.getElementById('scrollGroup');
+            
             tableContainer.addEventListener('scroll', () => {
                 if (tableContainer.scrollTop > 300) {
-                    document.getElementById('backToTopBtn').classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                    scrollGroup.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
                 } else {
-                    document.getElementById('backToTopBtn').classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                    scrollGroup.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
                 }
             });
         });
-
-        function scrollToTop() { document.getElementById('tableContainer').scrollTo({ top: 0, behavior: 'smooth' }); }
 
         document.getElementById('fileInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -73100,9 +73191,7 @@
 
                 let tr = document.createElement('tr');
                 tr.className = "hover-row border-b border-slate-50 dark:border-slate-800 transition-all fade-in bg-white dark:bg-slate-900";
-                
-                // --- AJUSTE ID para toggleSelectCandidate ---
-                tr.id = `row-${c.id}`; 
+                tr.id = `row-${c.id}`;
 
                 // Checkbox logic
                 const isSelected = selectedForCompare.includes(c.id);
@@ -73303,24 +73392,100 @@
             document.body.removeChild(link);
         }
 
+        // --- PDF GENERATION UPDATED ---
         function exportPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const filterName = document.getElementById('viewFilter').options[document.getElementById('viewFilter').selectedIndex].text;
             
-            doc.setFillColor(30, 41, 59); doc.rect(0, 0, 210, 30, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(14); doc.text("Classificação Oficial CNU - Bloco 7", 14, 15);
-            doc.setFontSize(9); doc.text(`Lista: ${filterName}`, 14, 24);
+            // 1. Cabeçalho Minimalista (Indigo Sólido)
+            doc.setFillColor(79, 70, 229); // Indigo 600
+            doc.rect(0, 0, 210, 35, 'F'); 
 
+            // Título (Branco e Negrito)
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("Painel CNU - Bloco 7", 14, 18);
+
+            // Subtítulo
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("Justiça e Defesa - Classificação Extraoficial", 14, 26);
+
+            // Metadados (Alinhados à direita)
+            const filterName = document.getElementById('viewFilter').options[document.getElementById('viewFilter').selectedIndex].text;
+            const dateStr = new Date().toLocaleDateString('pt-BR');
+            doc.setFontSize(9);
+            doc.text(`Lista: ${filterName}`, 196, 18, { align: 'right' });
+            doc.text(`Gerado em: ${dateStr}`, 196, 26, { align: 'right' });
+
+            // 2. Tabela de Dados
             const rows = currentViewList.map((c, i) => [
-                i + 1, c.pos_geral, c.name, c.cotas.filter(x=>x!='AC').join(','), c.computedStatus.label, c.total_score.toFixed(2)
+                i + 1,              // Pos
+                c.pos_geral,        // Geral
+                c.id,               // Inscrição
+                c.name,             // Nome
+                c.cotas.filter(x=>x!='AC').join(', ') || '-', // Cotas
+                c.computedStatus.label, // Situação
+                c.total_score.toFixed(2) // Nota
             ]);
 
             doc.autoTable({
-                head: [['#', 'Geral', 'Nome', 'Cotas', 'Situação', 'Nota']],
-                body: rows, startY: 35, theme: 'striped', styles: { fontSize: 8 }, headStyles: { fillColor: [51, 65, 85] }
+                head: [['#', 'Geral', 'Inscrição', 'Nome', 'Cotas', 'Situação', 'Nota']],
+                body: rows,
+                startY: 40,
+                theme: 'grid',
+                styles: { 
+                    fontSize: 7, // Fonte menor
+                    cellPadding: 3,
+                    font: "helvetica",
+                    lineColor: [229, 231, 235], // Cinza claro
+                    lineWidth: 0.1
+                },
+                headStyles: { 
+                    fillColor: [255, 255, 255], 
+                    textColor: [79, 70, 229], // Indigo text
+                    fontStyle: 'bold',
+                    lineWidth: 0.1,
+                    lineColor: [229, 231, 235]
+                },
+                columnStyles: {
+                    0: { cellWidth: 10, halign: 'center', fontStyle: 'bold' }, // Pos
+                    1: { cellWidth: 12, halign: 'center' }, // Geral
+                    2: { cellWidth: 28, halign: 'center', font: 'courier' }, // Inscrição Maior e Monospace
+                    3: { cellWidth: 'auto' }, // Nome (Auto-ajustável)
+                    4: { cellWidth: 20 }, // Cotas
+                    5: { cellWidth: 30, halign: 'center', fontStyle: 'bold' }, // Situação
+                    6: { cellWidth: 15, halign: 'right', fontStyle: 'bold', textColor: [67, 56, 202] } // Nota
+                },
+                alternateRowStyles: {
+                    fillColor: [249, 250, 251] // Slate 50 para alternar linhas
+                },
+                // Hook para Colorir a Situação
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 5) {
+                        const text = data.cell.raw;
+                        if (text.includes('VAGA')) {
+                            data.cell.styles.textColor = [22, 163, 74]; // Green 600
+                        } else if (text.includes('CR')) {
+                            data.cell.styles.textColor = [2, 132, 199]; // Sky 600
+                        } else {
+                            data.cell.styles.textColor = [156, 163, 175]; // Gray 400
+                            data.cell.styles.fontStyle = 'normal';
+                        }
+                    }
+                },
+                // Rodapé das páginas
+                didDrawPage: function (data) {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFontSize(8);
+                    doc.setTextColor(150);
+                    doc.text('Página ' + pageCount, data.settings.margin.left, doc.internal.pageSize.height - 10);
+                    doc.text('Painel CNU', 196, doc.internal.pageSize.height - 10, { align: 'right' });
+                }
             });
-            doc.save(`CNU_${filterName}.pdf`);
+
+            doc.save(`CNU_${filterName.replace(/\s+/g, '_')}.pdf`);
         }
 
         function saveOfflineHTML() {
@@ -73337,5 +73502,3 @@
     </script>
 </body>
 </html>
-
-
