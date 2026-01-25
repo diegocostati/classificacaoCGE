@@ -449,6 +449,7 @@
     </div>
 
     <!-- JSON DATA -->
+    <!-- COLE O JSON DENTRO DO COLCHETE ABAIXO E NÃO APAGUE A TAG </script> -->
     <script id="json-data" type="application/json">
         [
   {
@@ -72456,7 +72457,7 @@
         let quickFilter = 'ALL'; 
         let deferredPrompt;
         let userApiKey = localStorage.getItem('gemini_api_key') || "";
-        const apiKey = SYSTEM_API_KEY; // Environment key placeholder
+        const apiKey = SYSTEM_API_KEY; 
 
         // --- DATA DE ATUALIZAÇÃO ---
         document.getElementById('lastUpdateDate').innerText = new Date().toLocaleDateString('pt-BR');
@@ -72487,13 +72488,31 @@
         }
 
         function toggleSelectCandidate(id) {
+            // 1. Atualizar a lista de seleção
             if(selectedForCompare.includes(id)) {
                 selectedForCompare = selectedForCompare.filter(i => i !== id);
             } else {
-                if(selectedForCompare.length >= 2) selectedForCompare.shift(); 
+                if(selectedForCompare.length >= 2) {
+                    selectedForCompare.shift(); // Remove o primeiro sem atualizar visual ainda
+                }
                 selectedForCompare.push(id);
             }
-            renderBatch(); // Re-render to show selection visually
+            
+            // 2. Atualizar visual de TODAS as linhas visíveis para garantir sincronia
+            document.querySelectorAll('#tableBody tr').forEach(row => {
+                const rId = row.id.replace('row-', '');
+                const isSel = selectedForCompare.includes(rId);
+                
+                // Atualizar cor de fundo
+                if(isSel) row.classList.add('bg-indigo-50', 'dark:bg-indigo-900/40');
+                else row.classList.remove('bg-indigo-50', 'dark:bg-indigo-900/40');
+
+                // Atualizar Checkbox
+                const cb = row.querySelector('.custom-checkbox');
+                if(cb) cb.checked = isSel;
+            });
+
+            // 3. Trigger
             if(selectedForCompare.length === 2) setTimeout(executeComparison, 500);
         }
 
@@ -73082,6 +73101,9 @@
                 let tr = document.createElement('tr');
                 tr.className = "hover-row border-b border-slate-50 dark:border-slate-800 transition-all fade-in bg-white dark:bg-slate-900";
                 
+                // --- AJUSTE ID para toggleSelectCandidate ---
+                tr.id = `row-${c.id}`; 
+
                 // Checkbox logic
                 const isSelected = selectedForCompare.includes(c.id);
                 const bgSelected = isSelected ? 'bg-indigo-50 dark:bg-indigo-900/40' : '';
@@ -73315,5 +73337,3 @@
     </script>
 </body>
 </html>
-
-
