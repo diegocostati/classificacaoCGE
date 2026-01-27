@@ -73942,7 +73942,18 @@ window.updateView = function() {
                     '<td class="px-4 py-2.5 text-center text-[10px] text-slate-400 dark:text-slate-500 font-mono">#' + c.pos_geral + '</td>' +
                     '<td class="px-4 py-2.5 min-w-[180px]"><div class="flex items-center">' + starIcon + '<div class="font-bold text-slate-700 dark:text-slate-200 text-xs truncate">' + c.name + '</div></div><div class="mt-0.5 flex flex-wrap gap-1">' + badgesInfo + '</div>' + errorHtml + '</td>' +
                     '<td class="px-4 py-2.5 text-center"><span class="pill ' + pillClass + '">' + st.label + '</span></td>' +
-                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate
+                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">' + c.esp_score.toFixed(1) + '</td>' +
+                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">' + c.disc_score.toFixed(1) + '</td>' +
+                    '<td class="px-4 py-2.5 text-right font-extrabold font-mono text-xs text-indigo-700 dark:text-indigo-400">' + displayScore + '</td>';
+                
+                fragment.appendChild(tr);
+            });
+
+            tbody.appendChild(fragment);
+            renderedCount += chunk.length;
+            document.getElementById('loadedCount').innerText = Math.min(renderedCount, list.length) + '/' + list.length;
+            spinner.classList.add('hidden');
+        }
 		
         // --- GAP ANALYSIS & RADAR ---
         function calculateGap(candidate) {
@@ -74331,4 +74342,5 @@ var myIdentityId = localStorage.getItem('cnu_my_id');
     </script>
 </body>
 </html>
+
 
