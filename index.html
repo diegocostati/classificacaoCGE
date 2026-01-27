@@ -654,11 +654,13 @@
                         <div class="flex gap-2">
                              <button onclick="toggleExclusion()" id="btnExclude" class="text-[9px] font-bold text-red-500 hover:bg-red-50 px-3 py-1.5 rounded border border-red-200 uppercase transition-colors">Marcar Desistente</button>
                              <button onclick="triggerSniperMode()" class="text-[9px] font-bold text-indigo-500 hover:bg-indigo-50 px-3 py-1.5 rounded border border-indigo-200 uppercase transition-colors">Ver Vizinhos</button>
-                              <button onclick="toggleTracker()" class="text-[9px] font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 px-3 py-1.5 rounded border border-slate-200 dark:border-slate-700 uppercase transition-colors flex items-center gap-1">
+                              <button onclick="editCandidateScore()" class="text-[9px] font-bold text-amber-600 hover:bg-amber-50 px-3 py-1.5 rounded border border-amber-200 uppercase transition-colors flex items-center gap-1">
+        <i class="fa-solid fa-pen"></i> Editar Nota
+     </button>
+							<button onclick="toggleTracker()" class="text-[9px] font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 px-3 py-1.5 rounded border border-slate-200 dark:border-slate-700 uppercase transition-colors flex items-center gap-1">
                               <i class="fa-solid fa-crosshairs"></i> Fixar
 							  </button>
-							 <button onclick="setMyIdentity()" class="text-[9px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded border border-indigo-600 uppercase transition-colors flex items-center gap-1 shadow-md">
-        <i class="fa-solid fa-user-check"></i> Sou Eu
+							 <button onclick="setMyIdentity()" class="text-[9px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded border border-indigo-600 uppercase transition-colors flex items-center gap-1 shadow-md"><i class="fa-solid fa-user-check"></i> Sou Eu
     </button>
                         </div>
 						</div>
@@ -73795,18 +73797,16 @@ window.updateView = function() {
             });
         }
 
-        function renderBatch() {
+		function renderBatch() {
             var tbody = document.getElementById('tableBody');
             var search = document.getElementById('searchInput').value.toLowerCase();
             var spinner = document.getElementById('spinnerIcon');
             var sentinel = document.getElementById('scrollSentinel');
 
             // --- RESET DAS FLAGS DE DIVISOR ---
-            // Se estamos começando a renderizar do zero (topo da lista), limpamos as flags
             if (renderedCount === 0) {
                 window.viewDividers = { cr: false, elim: false };
             }
-            // Garantia caso a variável não exista
             if (!window.viewDividers) window.viewDividers = { cr: false, elim: false };
 
             // 1. Filtragem
@@ -73842,23 +73842,17 @@ window.updateView = function() {
             chunk.forEach(function(c, i) {
                 var absoluteIndex = renderedCount + i;
                 
-                // --- LÓGICA DE DIVISOR VISUAL (CORRIGIDA) ---
+                // --- LÓGICA DE DIVISOR VISUAL ---
                 if (absoluteIndex > 0) {
                     var prev = list[absoluteIndex - 1];
                     var currLabel = c.computedStatus.label;
-                    
-                    // Helpers para identificar grupo
                     var isCR = currLabel.includes('CR');
-                    var isElim = !currLabel.includes('VAGA') && !currLabel.includes('CR'); // Assumindo que resto é elim/out
+                    var isElim = !currLabel.includes('VAGA') && !currLabel.includes('CR');
 
-                    // 1. DIVISOR DE CR
-                    // Mostra se: É CR, ainda não mostramos o divisor de CR, e o anterior NÃO ERA CR (para evitar repetição se a flag falhar) ou simplesmente confiamos na flag.
-                    // A flag window.viewDividers.cr garante que aparece UMA SÓ VEZ na lista inteira.
+                    // Divisor de CR
                     if (isCR && !window.viewDividers.cr) {
-                        window.viewDividers.cr = true; // Marca como exibido
-                        
+                        window.viewDividers.cr = true;
                         var divTr = document.createElement('tr');
-                        // Extrai o tipo específico (ex: "CR AC" -> "AC")
                         var specificType = currLabel.replace('CR ', ''); 
                         var labelText = "Início do Cadastro Reserva";
                         if(specificType && specificType !== 'CR') labelText += " (" + specificType + ")";
@@ -73868,24 +73862,20 @@ window.updateView = function() {
                         fragment.appendChild(divTr);
                     }
 
-                    // 2. DIVISOR DE ELIMINADOS
+                    // Divisor de Eliminados
                     if (isElim && !window.viewDividers.elim) {
-                        window.viewDividers.elim = true; // Marca como exibido
-                        
+                        window.viewDividers.elim = true; 
                         var divTr = document.createElement('tr');
                         divTr.className = "bg-slate-200 dark:bg-slate-800 border-y border-slate-300 dark:border-slate-700";
                         divTr.innerHTML = '<td colspan="8" class="py-2 px-4 text-xs font-bold uppercase text-center tracking-widest text-slate-500"><i class="fa-solid fa-ban mr-2"></i>Fim da Classificação (Eliminados) <span class="ml-2 opacity-75 font-mono text-[10px]">(Nota de Corte: ' + prev.total_score.toFixed(2) + ')</span></td>';
                         fragment.appendChild(divTr);
                     }
                 }
-                // --- FIM LÓGICA DIVISOR ---
 
                 var pos = absoluteIndex + 1;
                 
-                // --- MELHORIA: DETECÇÃO DE REALOCAÇÃO ---
+                // --- BADGES E REALOCAÇÃO ---
                 var badgesInfo = '';
-                
-                // Verifica se passou na Ampla mas tem Cota
                 var isRealocado = c.computedStatus.label.includes('AC') && c.cotas.some(function(q){ return q !== 'AC'; });
                 
                 if(c.cotas.length === 1 && c.cotas[0] === 'AC') {
@@ -73897,33 +73887,15 @@ window.updateView = function() {
                         var colorClass = 'tag-' + q.toLowerCase();
                         var styleExtra = '';
                         var icon = '';
-                        
-                        // Lógica visual dos status
-                        if (st === 'DENIED') { 
-                            colorClass = 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'; 
-                            styleExtra = 'opacity: 0.7; text-decoration: line-through;'; 
-                            icon = '<i class="fa-solid fa-xmark ml-1"></i>'; 
-                        } 
-                        else if (st === 'ABSENT') { 
-                            colorClass = 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700'; 
-                            styleExtra = 'opacity: 0.7;'; 
-                            icon = ' (Aus)'; 
-                        } 
-                        else if (st === 'CONFIRMED') { 
-                            icon = '<i class="fa-solid fa-check ml-1 text-emerald-600 dark:text-emerald-400"></i>'; 
-                        }
-                        
+                        if (st === 'DENIED') { colorClass = 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'; styleExtra = 'opacity: 0.7; text-decoration: line-through;'; icon = '<i class="fa-solid fa-xmark ml-1"></i>'; } 
+                        else if (st === 'ABSENT') { colorClass = 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700'; styleExtra = 'opacity: 0.7;'; icon = ' (Aus)'; } 
+                        else if (st === 'CONFIRMED') { icon = '<i class="fa-solid fa-check ml-1 text-emerald-600 dark:text-emerald-400"></i>'; }
                         badgesInfo += '<span class="badge ' + colorClass + ' mr-1 mb-1" style="' + styleExtra + '" title="Status: ' + st + '">' + q + icon + '</span>';
                     });
-
-                    // SE REALOCADO: Adiciona badge especial "Passou na AC"
                     if(isRealocado) {
                         badgesInfo += '<span class="badge bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-800 mr-1 mb-1 font-bold" title="Candidato cotista classificado na Ampla Concorrência"><i class="fa-solid fa-arrow-turn-up mr-1"></i>Vaga AC</span>';
                     }
                 }
-                // ----------------------------------------
-
-
 
                 var st = c.computedStatus;
                 var pillClass = 'st-elim';
@@ -73955,6 +73927,13 @@ window.updateView = function() {
                     else { openModal(c, pos, pillClass); }
                 };
                 
+                // --- PREPARAÇÃO DA NOTA COM ÍCONE DE EDIÇÃO ---
+                var displayScore = c.total_score.toFixed(2);
+                if(c.is_simulated) {
+                    displayScore += ' <i class="fa-solid fa-pen text-[9px] text-amber-500 ml-1" title="Nota Simulada Manualmente"></i>';
+                }
+                // ----------------------------------------------
+
                 var checkHtml = '';
                 if(compareMode) checkHtml = '<td class="px-3 py-2.5 text-center"><input type="checkbox" class="custom-checkbox" ' + (isSelected ? 'checked' : '') + '></td>';
 
@@ -73963,18 +73942,7 @@ window.updateView = function() {
                     '<td class="px-4 py-2.5 text-center text-[10px] text-slate-400 dark:text-slate-500 font-mono">#' + c.pos_geral + '</td>' +
                     '<td class="px-4 py-2.5 min-w-[180px]"><div class="flex items-center">' + starIcon + '<div class="font-bold text-slate-700 dark:text-slate-200 text-xs truncate">' + c.name + '</div></div><div class="mt-0.5 flex flex-wrap gap-1">' + badgesInfo + '</div>' + errorHtml + '</td>' +
                     '<td class="px-4 py-2.5 text-center"><span class="pill ' + pillClass + '">' + st.label + '</span></td>' +
-                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">' + c.esp_score.toFixed(1) + '</td>' +
-                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate-400 dark:text-slate-500">' + c.disc_score.toFixed(1) + '</td>' +
-                    '<td class="px-4 py-2.5 text-right font-extrabold font-mono text-xs text-indigo-700 dark:text-indigo-400">' + c.total_score.toFixed(2) + '</td>';
-                
-                fragment.appendChild(tr);
-            });
-
-            tbody.appendChild(fragment);
-            renderedCount += chunk.length;
-            document.getElementById('loadedCount').innerText = Math.min(renderedCount, list.length) + '/' + list.length;
-            spinner.classList.add('hidden');
-        }
+                    '<td class="px-4 py-2.5 text-right font-mono text-[10px] text-slate
 		
         // --- GAP ANALYSIS & RADAR ---
         function calculateGap(candidate) {
@@ -74265,7 +74233,102 @@ var myIdentityId = localStorage.getItem('cnu_my_id');
                 }
             }
         }
+		window.editCandidateScore = function() {
+            if(!currentModalCandidate) return;
 
+            var c = currentModalCandidate;
+
+            // 1. Descobre a nota de Títulos (que é a diferença que sobra)
+            // Lógica: Total = (Geral + Específica) + Discursiva + Títulos
+            var currentObj = c.geral_score + c.esp_score;
+            var currentTitles = c.total_score - (currentObj + c.disc_score);
+            // Corrige imprecisão de float (ex: 4.000000001 vira 4.00)
+            currentTitles = Math.round(currentTitles * 100) / 100;
+
+            // 2. Menu de Opções
+            var menu = "⚖️ SIMULADOR DE RECURSO (DETALHADO)\n\n" +
+                       "Escolha qual nota alterar (Digite o Número):\n" +
+                       "1. 🧠 Conhecimentos Gerais (Atual: " + c.geral_score.toFixed(1) + ")\n" +
+                       "2. 📚 Conhecimentos Específicos (Atual: " + c.esp_score.toFixed(1) + ")\n" +
+                       "3. ✍️ Discursiva (Atual: " + c.disc_score.toFixed(2) + ")\n" +
+                       "4. 🏆 Títulos (Atual: " + currentTitles.toFixed(2) + ")\n\n" + 
+                       "5. ❌ Cancelar";
+
+            var choice = prompt(menu, "3");
+            if(!choice || choice === "5") return; // Cancelou
+
+            var label = "";
+            var currentVal = 0;
+            var field = "";
+
+            if(choice == "1") { label = "Geral"; currentVal = c.geral_score; field = "geral"; }
+            else if(choice == "2") { label = "Específica"; currentVal = c.esp_score; field = "esp"; }
+            else if(choice == "3") { label = "Discursiva"; currentVal = c.disc_score; field = "disc"; }
+            else if(choice == "4") { label = "Títulos"; currentVal = currentTitles; field = "titles"; }
+            else { alert("Opção inválida!"); return; }
+
+            // 3. Pede o novo valor
+            var newValueStr = prompt("Alterar nota de " + label + ":\nValor Atual: " + currentVal, currentVal);
+            if(!newValueStr) return;
+
+            var newVal = parseFloat(newValueStr.replace(',', '.'));
+            if(isNaN(newVal)) { alert("Valor inválido!"); return; }
+
+            // 4. Aplica a mudança e Recalcula TUDO
+            if(field === "geral") c.geral_score = newVal;
+            if(field === "esp") c.esp_score = newVal;
+            if(field === "disc") c.disc_score = newVal;
+            
+            var finalTitles = (field === "titles") ? newVal : currentTitles;
+            
+            // Recalcula Objetivo (Geral + Esp)
+            c.obj_score = c.geral_score + c.esp_score;
+            
+            // Recalcula Total (Obj + Disc + Titulos)
+            c.total_score = c.obj_score + c.disc_score + finalTitles;
+            
+            // Marca como simulado para aparecer o lápis na tabela
+            c.is_simulated = true;
+
+            // 5. REORDENAÇÃO CRITERIOSA (Igual ao Python/Edital)
+            // Critérios: 1º Total -> 2º Específica -> 3º Discursiva -> 4º Geral
+            allData.sort(function(a,b) { 
+                // Diferença de Total (Margem de erro 0.001 para float)
+                if (Math.abs(b.total_score - a.total_score) > 0.001) return b.total_score - a.total_score;
+                // Empate? Vai para Específica
+                if (Math.abs(b.esp_score - a.esp_score) > 0.001) return b.esp_score - a.esp_score;
+                // Empate? Vai para Discursiva
+                if (Math.abs(b.disc_score - a.disc_score) > 0.001) return b.disc_score - a.disc_score;
+                // Empate? Vai para Geral
+                return b.geral_score - a.geral_score;
+            });
+            
+            // 6. Atualiza posições e visualização
+            processCascading();
+            
+            var newPos = calculatedData.findIndex(function(x) { return x.id === c.id; }) + 1;
+            var diff = newVal - currentVal;
+            var msgDiff = diff > 0 ? "+" + diff.toFixed(2) : diff.toFixed(2);
+            
+            alert("✅ SIMULAÇÃO APLICADA!\n\n" + 
+                  "Alteração: " + label + " (" + msgDiff + " pts)\n" +
+                  "Nova Nota Final: " + c.total_score.toFixed(2) + "\n" +
+                  "Nova Posição Estimada: #" + newPos);
+
+            window.closeModal();
+            updateView();
+            
+            // Animação de destaque na linha
+            setTimeout(function() {
+                var row = document.getElementById('tr-' + c.id);
+                if(row) {
+                    row.scrollIntoView({behavior: 'smooth', block: 'center'});
+                    row.classList.add('bg-amber-100', 'dark:bg-amber-900/30');
+                    setTimeout(function(){ row.classList.remove('bg-amber-100', 'dark:bg-amber-900/30'); }, 3000);
+                }
+            }, 500);
+        };
     </script>
 </body>
 </html>
+
