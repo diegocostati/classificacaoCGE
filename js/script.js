@@ -105,7 +105,45 @@ window.toggleExclusion = function () {
     window.closeModal();
 };
 
-// --- SNIPER MODE ---
+// --- SHARE CARD ---
+window.generateShareCard = function () {
+    if (!currentModalCandidate) return;
+    var c = currentModalCandidate;
+
+    // Populate Canvas
+    document.getElementById('scName').innerText = c.name;
+    document.getElementById('scPos').innerText = "#" + c.pos_geral + " Geral";
+    document.getElementById('scTotal').innerText = c.total_score.toFixed(2);
+    document.getElementById('scStatus').innerText = c.computedStatus.label;
+
+    // Status Colors
+    var stLabel = document.getElementById('scStatus');
+    stLabel.className = "text-sm font-bold uppercase tracking-wider ";
+    if (c.computedStatus.label.includes('VAGA')) stLabel.className += "text-emerald-600";
+    else if (c.computedStatus.label.includes('CR')) stLabel.className += "text-sky-600";
+    else stLabel.className += "text-slate-500";
+
+    var node = document.getElementById('shareCardContainer');
+    // Ensure styles for capture
+    node.style.display = 'block';
+
+    html2canvas(node, {
+        scale: 2, // Retina quality
+        backgroundColor: null,
+        useCORS: true
+    }).then(function (canvas) {
+        var link = document.createElement('a');
+        link.download = 'resultado_cnu_' + c.name.split(' ')[0] + '.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        showToast("Imagem salva! Pode postar! 📸", "success");
+    }).catch(function (err) {
+        console.error(err);
+        alert("Erro ao gerar imagem.");
+    });
+};
+
+// --- NEIGHBOR MODE (Vizinhos) ---
 window.triggerSniperMode = function () {
     if (!currentModalCandidate) return;
     var idx = currentViewList.findIndex(c => c.id === currentModalCandidate.id);
@@ -114,28 +152,26 @@ window.triggerSniperMode = function () {
     var start = Math.max(0, idx - 5);
     var end = Math.min(currentViewList.length, idx + 6);
 
-    // Temporary override view list
+    // Extract Neighbors
     var snippet = currentViewList.slice(start, end);
-
-    // Re-render only snippet
-    document.getElementById('tableBody').innerHTML = '';
-    // Hack: manually render without breaking pagination
-    var fragment = document.createDocumentFragment();
-    snippet.forEach(function (c, i) {
-        // Logic mostly duplicated from renderBatch for snippet
-        // ... simplified render ...
-    });
-    // Better approach: filter by IDs
     var ids = snippet.map(c => c.id);
-    // We use quick filter logic to hack it or just alert for now as requested simple implementation
-    alert("Modo Vizinhos Ativado! Filtrando apenas candidatos próximos.");
-    document.getElementById('searchInput').value = "";
-    // Filter global list to just these IDs
+
+    // Apply Filter
+    document.getElementById('searchInput').value = ""; // Clear search
     currentViewList = calculatedData.filter(c => ids.includes(c.id));
+    window.currentRenderData = currentViewList; // Sync for export
+
+    // Update view mechanics
     renderedCount = 0;
     document.getElementById('tableBody').innerHTML = '';
     renderBatch();
+
+    // Feedback
     window.closeModal();
+    showToast("Modo Vizinhos Ativado! 🕵️", "success");
+
+    // Add visually distinct header or reset button logic? 
+    // For now, the user can simple click "Todos" or change filter to reset.
 };
 
 // --- SORTING ---
@@ -666,6 +702,13 @@ window.initApp = function () {
 
     processCascading();
     setupIntersectionObserver();
+
+    // Resume Identity if available
+    if (localStorage.getItem('cnu_my_id')) {
+        myIdentityId = localStorage.getItem('cnu_my_id');
+        updateHeroDashboard();
+    }
+
     updateView();
 };
 
