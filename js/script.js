@@ -52,11 +52,11 @@ window.closeDonation = function () {
         popup.classList.add('hidden');
         popup.style.opacity = '';
     }, 300);
-    localStorage.setItem('cnu_donation_shown', 'true');
+    sessionStorage.setItem('cnu_donation_shown', 'true');
 };
 
 window.showDonationIfNeeded = function () {
-    if (!localStorage.getItem('cnu_donation_shown')) {
+    if (!sessionStorage.getItem('cnu_donation_shown')) {
         setTimeout(function () {
             var popup = document.getElementById('donationPopup');
             popup.classList.remove('hidden');
