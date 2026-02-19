@@ -1,7 +1,7 @@
 ;
 
 // --- VARIAVEIS GLOBAIS ---
-var CONFIG_VAGAS = { 'AC': 161, 'PN': 63, 'PCD': 13, 'PI': 8, 'PQ': 5 };
+var CONFIG_VAGAS = { 'AC': 57, 'PN': 0, 'PCD': 3, 'PI': 0, 'PQ': 0 };
 var CONFIG_PAGE_SIZE = 50;
 var allData = [];
 var calculatedData = [];
